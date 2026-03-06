@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://72lbfk6rvqp6"]
+
+[ext_resource type="Script" uid="uid://b6sj66ihrguks" path="res://scenes/minigames/BlockGame/block.gd" id="1_c5guc"]
+[ext_resource type="Shader" uid="uid://2iodluf1ec75" path="res://scenes/minigames/BlockGame/Block.gdshader" id="1_rd6n7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c5guc"]
+shader = ExtResource("1_rd6n7")
+shader_parameter/base_color = Color(1, 0.19999999, 0.21333313, 1)
+shader_parameter/face_top_h = 0.13
+shader_parameter/face_bottom_h = 0.13
+shader_parameter/face_left_w = 0.13
+shader_parameter/face_right_w = 0.13
+shader_parameter/bright_top = 1.85
+shader_parameter/bright_left = 1.3
+shader_parameter/bright_center = 1.05
+shader_parameter/dark_right = 0.55
+shader_parameter/dark_bottom = 0.35
+shader_parameter/gloss_strength = 0.4
+shader_parameter/gloss_width = 0.55
+shader_parameter/edge_sharpness = 80.0
+shader_parameter/corner_radius = 0.15000000596046
+shader_parameter/corner_ao = 0.55
+
+[node name="Block" type="Node2D" unique_id=333476312]
+script = ExtResource("1_c5guc")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=2140646712]
+material = SubResource("ShaderMaterial_c5guc")
+offset_right = 120.0
+offset_bottom = 120.0
+color = Color(0.61707944, 0.00028117985, 0.617235, 1)

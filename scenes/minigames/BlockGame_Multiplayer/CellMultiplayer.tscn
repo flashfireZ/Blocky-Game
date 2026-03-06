@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dxixgsubdylpd"]
+
+[node name="Cell" type="Node2D" unique_id=1848631637]
+
+[node name="Cell" type="ColorRect" parent="." unique_id=883539862]
+offset_right = 120.0
+offset_bottom = 120.0
+mouse_filter = 2
+color = Color(0.101960786, 0.101960786, 0.18039216, 1)
+
+[node name="Line2D" type="Line2D" parent="." unique_id=804039736]
+points = PackedVector2Array(0, 0, 120, 0, 120, 120, 0, 120, 0, 0)
+width = 2.0
+default_color = Color(0.018940236, 0.018940235, 0.018940233, 1)

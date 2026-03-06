@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://cvlvuo50i8p7p"]
+
+[ext_resource type="Shader" uid="uid://5hncyrod5a6p" path="res://scenes/minigames/BlockGame/Cell.gdshader" id="1_l1nbb"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f4v7w"]
+shader = ExtResource("1_l1nbb")
+shader_parameter/fill_color = Color(0.2, 0, 0.28627452, 1)
+shader_parameter/border_color = Color(0.101960786, 0.3019608, 1, 1)
+shader_parameter/corner_radius = 0.0
+shader_parameter/border_width = 0.0450000021375
+shader_parameter/border_darkness = 1.0
+
+[node name="Cell" type="Node2D" unique_id=1848631637]
+
+[node name="Cell" type="ColorRect" parent="." unique_id=883539862]
+material = SubResource("ShaderMaterial_f4v7w")
+offset_right = 120.0
+offset_bottom = 120.0
+mouse_filter = 2
+color = Color(0.101960786, 0.101960786, 0.18039216, 1)
+metadata/_edit_use_anchors_ = true

@@ -1,0 +1,208 @@
+[gd_scene format=3 uid="uid://dltcyn2j6hkf1"]
+
+[ext_resource type="Script" uid="uid://bphlqgfh375l5" path="res://scripts/minigame_blocky/background_principal.gd" id="1_jlkjx"]
+[ext_resource type="Script" uid="uid://bxwpvutuj73x1" path="res://scenes/minigames/BlockGame_Multiplayer/main_block_game_multiplayer.gd" id="1_tucik"]
+[ext_resource type="Script" uid="uid://d1e5ocbio5b13" path="res://scenes/minigames/BlockGame_Multiplayer/grid_multiplayer.gd" id="2_asxbh"]
+[ext_resource type="Script" uid="uid://dgju3wrppvofj" path="res://scenes/minigames/BlockGame_Multiplayer/piece_manager_multiplayer.gd" id="3_o3l3v"]
+[ext_resource type="FontFile" uid="uid://bd7p25cgyjcdt" path="res://assets/fonts/LuckiestGuy-Regular.ttf" id="4_nky6x"]
+[ext_resource type="PackedScene" uid="uid://c3i0fnnpve7rx" path="res://scenes/minigames/BlockGame/TypesPieces/piece_2.tscn" id="5_3sh80"]
+[ext_resource type="Script" uid="uid://dugy6tp8n2yqf" path="res://scripts/minigame_blocky/game_over_ui.gd" id="5_23nm4"]
+[ext_resource type="Texture2D" uid="uid://1d7eexj3bkmg" path="res://icon.svg" id="6_3sh80"]
+[ext_resource type="PackedScene" uid="uid://dvht6ypjcnc1x" path="res://scenes/minigames/BlockGame/TypesPieces/piece_3.tscn" id="7_vjgw5"]
+[ext_resource type="PackedScene" uid="uid://bg1gqtc6xl2ig" path="res://scenes/minigames/BlockGame/TypesPieces/piece_4.tscn" id="8_y10i3"]
+[ext_resource type="Script" uid="uid://cqncrpopjqynw" path="res://scenes/minigames/BlockGame_Multiplayer/game_state_manager.gd" id="37_vjgw5"]
+
+[node name="MainBlockGame" type="Node2D" unique_id=1230392537]
+script = ExtResource("1_tucik")
+
+[node name="BackgroundPrincipal" type="ColorRect" parent="." unique_id=446129661]
+offset_right = 1080.0
+offset_bottom = 1920.0
+mouse_filter = 2
+color = Color(0.26691467, 0.48286825, 0.9991726, 1)
+script = ExtResource("1_jlkjx")
+
+[node name="Button" type="Button" parent="BackgroundPrincipal" unique_id=316133208]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 27.0
+offset_right = 186.0
+offset_bottom = 86.0
+theme_override_font_sizes/font_size = 50
+text = "Quitter
+"
+
+[node name="ComboLabel" type="Label" parent="BackgroundPrincipal" unique_id=1583906532]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = 81.0
+offset_right = 279.0
+offset_bottom = 397.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridMultiplayer" type="Node2D" parent="." unique_id=1170787230]
+script = ExtResource("2_asxbh")
+
+[node name="PieceManagerMulti" type="Node2D" parent="." unique_id=283314732]
+z_index = 10
+position = Vector2(0, 1500)
+script = ExtResource("3_o3l3v")
+piece_templates = Array[PackedScene]([ExtResource("5_3sh80"), ExtResource("7_vjgw5"), ExtResource("8_y10i3")])
+
+[node name="ScoreLabel" type="Label" parent="." unique_id=1413456945]
+offset_left = 239.0
+offset_top = 66.0
+offset_right = 863.0
+offset_bottom = 189.0
+theme_override_fonts/font = ExtResource("4_nky6x")
+theme_override_font_sizes/font_size = 30
+
+[node name="ExplosionParticles" type="CPUParticles2D" parent="." unique_id=1271007531]
+emitting = false
+amount = 20
+one_shot = true
+explosiveness = 1.0
+randomness = 0.29
+spread = 180.0
+gravity = Vector2(0, 2)
+initial_velocity_min = 106.53
+initial_velocity_max = 196.52
+
+[node name="GameOverUI" type="CanvasLayer" parent="." unique_id=1708438157]
+visible = false
+script = ExtResource("5_23nm4")
+
+[node name="Background" type="ColorRect" parent="GameOverUI" unique_id=652287438]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -416.5
+offset_top = -782.5
+offset_right = 416.5
+offset_bottom = 782.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.003921569, 0.02745098, 0, 0.3254902)
+
+[node name="RestartButton" type="Button" parent="GameOverUI/Background" unique_id=1888850011]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -165.5
+offset_top = -80.5
+offset_right = 165.5
+offset_bottom = 80.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Replay
+"
+
+[node name="Title" type="Label" parent="GameOverUI/Background" unique_id=2004401156]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -165.0
+offset_top = 52.5
+offset_right = 129.0
+offset_bottom = 149.5
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 57
+text = "END Game"
+
+[node name="FinalScoreLabel" type="Label" parent="GameOverUI/Background" unique_id=310059077]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -330.0
+offset_top = -513.0
+offset_right = 293.0
+offset_bottom = -430.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+
+[node name="QuitButton" type="Button" parent="GameOverUI/Background" unique_id=1652465710]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = 217.5
+offset_right = 270.0
+offset_bottom = 353.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "Retrun to Village
+"
+icon = ExtResource("6_3sh80")
+
+[node name="HPBarPlayer" type="ProgressBar" parent="GameOverUI/Background" unique_id=437284223]
+layout_mode = 0
+offset_left = -123.5
+offset_top = -177.5
+offset_right = -119.5
+offset_bottom = -150.5
+
+[node name="ShieldBarPlayer" type="ProgressBar" parent="GameOverUI/Background" unique_id=342657366]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 27.0
+
+[node name="HPBarOpponent" type="ProgressBar" parent="GameOverUI/Background" unique_id=689624883]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 27.0
+
+[node name="ShieldBarOpponent" type="ProgressBar" parent="GameOverUI/Background" unique_id=2068639884]
+layout_mode = 0
+offset_right = 4.0
+offset_bottom = 27.0
+
+[node name="TimerLabel" type="Label" parent="GameOverUI/Background" unique_id=1746519640]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="ComboLabel" type="Label" parent="GameOverUI/Background" unique_id=884462847]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="DamageMultiLabel" type="Label" parent="GameOverUI/Background" unique_id=1356645195]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="GameStateManager" type="Node" parent="." unique_id=1282380084]
+script = ExtResource("37_vjgw5")
+
+[node name="OpponentLabel" type="Label" parent="." unique_id=1758691373]
+offset_left = 544.0
+offset_top = 66.0
+offset_right = 904.0
+offset_bottom = 129.0
+theme_override_font_sizes/font_size = 29
+text = "ID Opponent"
+
+[connection signal="pressed" from="BackgroundPrincipal/Button" to="BackgroundPrincipal" method="_on_button_pressed"]
+[connection signal="pressed" from="GameOverUI/Background/RestartButton" to="GameOverUI" method="_on_restart_button_pressed"]
+[connection signal="pressed" from="GameOverUI/Background/QuitButton" to="GameOverUI" method="_on_quit_button_pressed"]

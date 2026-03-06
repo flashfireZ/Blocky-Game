@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://d3gskaaqnlkjm"]
+
+[ext_resource type="Script" uid="uid://cm68ht0mg06mg" path="res://scripts/minigame_blocky/piece.gd" id="1_puw2f"]
+[ext_resource type="PackedScene" uid="uid://cf2gpftvxes8c" path="res://scenes/minigames/BlockGame_Multiplayer/BlockMultiplayer.tscn" id="2_uclb3"]
+
+[node name="Piece" type="Node2D" unique_id=273111929]
+script = ExtResource("1_puw2f")
+
+[node name="Block" parent="." unique_id=333476312 instance=ExtResource("2_uclb3")]
+position = Vector2(120, 0)
+
+[node name="Block2" parent="." unique_id=654465343 instance=ExtResource("2_uclb3")]
+position = Vector2(0, 120)
+
+[node name="Block4" parent="." unique_id=1882634127 instance=ExtResource("2_uclb3")]
+position = Vector2(120, 120)
+
+[node name="Block3" parent="." unique_id=1517482272 instance=ExtResource("2_uclb3")]
+position = Vector2(240, 120)

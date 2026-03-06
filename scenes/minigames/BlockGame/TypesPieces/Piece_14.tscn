@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://pq4qng0rik85"]
+
+[ext_resource type="Script" uid="uid://cm68ht0mg06mg" path="res://scripts/minigame_blocky/piece.gd" id="1_t2y7u"]
+[ext_resource type="PackedScene" uid="uid://72lbfk6rvqp6" path="res://scenes/minigames/BlockGame/Block.tscn" id="2_warhq"]
+
+[node name="Piece" type="Node2D" unique_id=273111929]
+script = ExtResource("1_t2y7u")
+
+[node name="Block" parent="." unique_id=333476312 instance=ExtResource("2_warhq")]

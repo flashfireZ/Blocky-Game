@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://b1k7aysoeh70r"]
+
+[ext_resource type="Script" uid="uid://dopv3guxnxppn" path="res://scenes/minigames/BlockGame_Multiplayer/piece_multiplayer.gd" id="1_efrpv"]
+[ext_resource type="PackedScene" uid="uid://cf2gpftvxes8c" path="res://scenes/minigames/BlockGame_Multiplayer/BlockMultiplayer.tscn" id="2_a2ahp"]
+
+[node name="Piece" type="Node2D" unique_id=273111929]
+script = ExtResource("1_efrpv")
+
+[node name="Block" parent="." unique_id=333476312 instance=ExtResource("2_a2ahp")]
+
+[node name="Block2" parent="." unique_id=654465343 instance=ExtResource("2_a2ahp")]
+position = Vector2(0, 120)

@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://s6vqh4m78o1k"]
+
+[ext_resource type="Script" uid="uid://o0ooo8ugbrnn" path="res://scenes/minigames/BlockGame_Multiplayer/lobby.gd" id="1_tjsx0"]
+
+[node name="Lobby" type="Control" unique_id=1785337675]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_tjsx0")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1714412204]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1080.0
+offset_bottom = 1920.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.34509805, 1, 1)
+
+[node name="CancelBtn" type="Button" parent="." unique_id=1543166030]
+layout_mode = 0
+offset_left = 440.0
+offset_top = 646.0
+offset_right = 575.0
+offset_bottom = 686.0
+text = "Cancel
+"
+
+[node name="BattleBtn" type="Button" parent="." unique_id=1454222976]
+layout_mode = 0
+offset_left = 453.0
+offset_top = 592.0
+offset_right = 559.0
+offset_bottom = 632.0
+text = "Battle
+
+"
+
+[node name="StatusLabel" type="Label" parent="." unique_id=1684574730]
+layout_mode = 0
+offset_left = 375.0
+offset_top = 440.0
+offset_right = 629.0
+offset_bottom = 483.0
+
+[connection signal="pressed" from="CancelBtn" to="." method="_on_cancel_btn_pressed"]
+[connection signal="pressed" from="BattleBtn" to="." method="_on_battle_btn_pressed"]

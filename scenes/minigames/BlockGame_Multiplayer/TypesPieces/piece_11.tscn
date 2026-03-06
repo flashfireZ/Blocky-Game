@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b73d6m7t3oj82"]
+
+[ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/Piece.tscn" id="1_nieam"]
+[ext_resource type="PackedScene" uid="uid://cf2gpftvxes8c" path="res://scenes/minigames/BlockGame_Multiplayer/BlockMultiplayer.tscn" id="2_yd7st"]
+
+[node name="Piece_Square2x2" unique_id=273111929 instance=ExtResource("1_nieam")]
+
+[node name="Block" parent="." index="0" unique_id=333476312]
+position = Vector2(4, 237)
+
+[node name="Block2" parent="." index="1" unique_id=654465343]
+position = Vector2(122, 237)
+
+[node name="Block4" parent="." index="2" unique_id=512696095 instance=ExtResource("2_yd7st")]
+position = Vector2(122, 117)
+
+[node name="Block3" parent="." index="3" unique_id=1517482272]
+position = Vector2(122, 0)

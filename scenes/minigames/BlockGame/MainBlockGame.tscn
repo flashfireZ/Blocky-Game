@@ -1,0 +1,185 @@
+[gd_scene format=3 uid="uid://bwpvomn3a27qx"]
+
+[ext_resource type="Script" uid="uid://bphlqgfh375l5" path="res://scripts/minigame_blocky/background_principal.gd" id="1_nks8j"]
+[ext_resource type="PackedScene" uid="uid://bjx4opdlt7n1" path="res://scenes/minigames/BlockGame/TypesPieces/Piece.tscn" id="1_vfwt8"]
+[ext_resource type="Script" uid="uid://bg5raaf0xhkpu" path="res://scripts/minigame_blocky/grid.gd" id="2_854hh"]
+[ext_resource type="Script" uid="uid://1qdl6b6cvxyu" path="res://scripts/minigame_blocky/piece_manager.gd" id="3_olcly"]
+[ext_resource type="PackedScene" uid="uid://dvht6ypjcnc1x" path="res://scenes/minigames/BlockGame/TypesPieces/piece_3.tscn" id="4_6nnfk"]
+[ext_resource type="PackedScene" uid="uid://c3i0fnnpve7rx" path="res://scenes/minigames/BlockGame/TypesPieces/piece_2.tscn" id="5_teve6"]
+[ext_resource type="PackedScene" uid="uid://bg1gqtc6xl2ig" path="res://scenes/minigames/BlockGame/TypesPieces/piece_4.tscn" id="6_nks8j"]
+[ext_resource type="Script" uid="uid://dugy6tp8n2yqf" path="res://scripts/minigame_blocky/game_over_ui.gd" id="7_teve6"]
+[ext_resource type="PackedScene" uid="uid://c2rkbyun3v5ql" path="res://scenes/minigames/BlockGame/TypesPieces/piece_5.tscn" id="8_xij3c"]
+[ext_resource type="PackedScene" uid="uid://ncjltlgijxt2" path="res://scenes/minigames/BlockGame/TypesPieces/piece_6.tscn" id="9_a2kiv"]
+[ext_resource type="Texture2D" uid="uid://1d7eexj3bkmg" path="res://icon.svg" id="9_m71vt"]
+[ext_resource type="PackedScene" uid="uid://rdkc4v37t0xu" path="res://scenes/minigames/BlockGame/TypesPieces/piece_7.tscn" id="10_7jdoe"]
+[ext_resource type="PackedScene" uid="uid://teni0cvq558e" path="res://scenes/minigames/BlockGame/TypesPieces/piece_8.tscn" id="11_m78fy"]
+[ext_resource type="PackedScene" uid="uid://db6844t7mq3th" path="res://scenes/minigames/BlockGame/TypesPieces/piece_9.tscn" id="12_2jjdj"]
+[ext_resource type="PackedScene" uid="uid://28fbb21clkcd" path="res://scenes/minigames/BlockGame/TypesPieces/piece_10.tscn" id="13_mi5iy"]
+[ext_resource type="PackedScene" uid="uid://dopjvp8iy5ui0" path="res://scenes/minigames/BlockGame/TypesPieces/piece_11.tscn" id="14_pqlxq"]
+[ext_resource type="PackedScene" uid="uid://c0fl72p3g15hg" path="res://scenes/minigames/BlockGame/TypesPieces/piece_12.tscn" id="15_fufjx"]
+[ext_resource type="PackedScene" uid="uid://b87g47xx2egas" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_13.tscn" id="16_ivxlj"]
+[ext_resource type="PackedScene" uid="uid://pq4qng0rik85" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_14.tscn" id="17_edtk7"]
+[ext_resource type="PackedScene" uid="uid://oavxpymqq6nl" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_15.tscn" id="18_qlam8"]
+[ext_resource type="PackedScene" uid="uid://dmk6d1judu86y" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_16.tscn" id="19_8ilpb"]
+[ext_resource type="PackedScene" uid="uid://3kc27n4j5ty3" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_17.tscn" id="20_x2e70"]
+[ext_resource type="PackedScene" uid="uid://bg32yre43jm4d" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_18.tscn" id="21_84838"]
+[ext_resource type="PackedScene" uid="uid://dn2h8d0q63m22" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_19.tscn" id="22_06q4v"]
+[ext_resource type="PackedScene" uid="uid://c814nr6mxe1ju" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_20.tscn" id="23_dheyt"]
+[ext_resource type="PackedScene" uid="uid://dpmq7bf1bolkw" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_21.tscn" id="24_nya1x"]
+[ext_resource type="PackedScene" uid="uid://dba8unns3r3lq" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_22.tscn" id="25_8hp8j"]
+[ext_resource type="PackedScene" uid="uid://c8ycawuxefqg3" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_23.tscn" id="26_drqvn"]
+[ext_resource type="PackedScene" uid="uid://cjfh8kw21moqh" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_24.tscn" id="27_oh3di"]
+[ext_resource type="PackedScene" uid="uid://dg0xulivrgqqn" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_25.tscn" id="28_mouy5"]
+[ext_resource type="PackedScene" uid="uid://i172bb1qe8dv" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_26.tscn" id="29_vnuhp"]
+[ext_resource type="PackedScene" uid="uid://bccnpeis8dyfn" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_28.tscn" id="30_u652y"]
+[ext_resource type="PackedScene" uid="uid://c76uym1aoltyp" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_27.tscn" id="31_s3ih1"]
+[ext_resource type="PackedScene" uid="uid://bms0462pabxuu" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_29.tscn" id="32_s6wqd"]
+[ext_resource type="PackedScene" uid="uid://cwlh1agqotbys" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_30.tscn" id="33_02q7r"]
+[ext_resource type="PackedScene" uid="uid://cabfpk0dy54kw" path="res://scenes/minigames/BlockGame/TypesPieces/Piece_31.tscn" id="34_qlam8"]
+[ext_resource type="FontFile" uid="uid://bd7p25cgyjcdt" path="res://assets/fonts/LuckiestGuy-Regular.ttf" id="35_8ilpb"]
+
+[node name="MainBlockGame" type="Node2D" unique_id=1230392537]
+
+[node name="BackgroundPrincipal" type="ColorRect" parent="." unique_id=446129661]
+offset_right = 1080.0
+offset_bottom = 1920.0
+mouse_filter = 2
+color = Color(0.26691467, 0.48286825, 0.9991726, 1)
+script = ExtResource("1_nks8j")
+
+[node name="Button" type="Button" parent="BackgroundPrincipal" unique_id=316133208]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 27.0
+offset_right = 186.0
+offset_bottom = 86.0
+theme_override_font_sizes/font_size = 50
+text = "Quitter
+"
+
+[node name="ComboLabel" type="Label" parent="BackgroundPrincipal" unique_id=1583906532]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = 81.0
+offset_right = 279.0
+offset_bottom = 397.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Grid" type="Node2D" parent="." unique_id=1170787230]
+script = ExtResource("2_854hh")
+
+[node name="PieceManager" type="Node2D" parent="." unique_id=283314732]
+z_index = 10
+position = Vector2(0, 1500)
+script = ExtResource("3_olcly")
+piece_templates = Array[PackedScene]([ExtResource("1_vfwt8"), ExtResource("4_6nnfk"), ExtResource("5_teve6"), ExtResource("6_nks8j"), ExtResource("8_xij3c"), ExtResource("9_a2kiv"), ExtResource("10_7jdoe"), ExtResource("11_m78fy"), ExtResource("12_2jjdj"), ExtResource("13_mi5iy"), ExtResource("14_pqlxq"), ExtResource("15_fufjx"), ExtResource("16_ivxlj"), ExtResource("17_edtk7"), ExtResource("18_qlam8"), ExtResource("19_8ilpb"), ExtResource("20_x2e70"), ExtResource("21_84838"), ExtResource("22_06q4v"), ExtResource("23_dheyt"), ExtResource("24_nya1x"), ExtResource("25_8hp8j"), ExtResource("26_drqvn"), ExtResource("27_oh3di"), ExtResource("28_mouy5"), ExtResource("29_vnuhp"), ExtResource("30_u652y"), ExtResource("31_s3ih1"), ExtResource("32_s6wqd"), ExtResource("33_02q7r"), ExtResource("34_qlam8")])
+
+[node name="ScoreLabel" type="Label" parent="." unique_id=1413456945]
+offset_left = 239.0
+offset_top = 66.0
+offset_right = 863.0
+offset_bottom = 189.0
+theme_override_fonts/font = ExtResource("35_8ilpb")
+theme_override_font_sizes/font_size = 30
+
+[node name="ExplosionParticles" type="CPUParticles2D" parent="." unique_id=1271007531]
+emitting = false
+amount = 20
+one_shot = true
+explosiveness = 1.0
+randomness = 0.29
+spread = 180.0
+gravity = Vector2(0, 2)
+initial_velocity_min = 106.53
+initial_velocity_max = 196.52
+
+[node name="GameOverUI" type="CanvasLayer" parent="." unique_id=1708438157]
+visible = false
+script = ExtResource("7_teve6")
+
+[node name="Background" type="ColorRect" parent="GameOverUI" unique_id=652287438]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -416.5
+offset_top = -782.5
+offset_right = 416.5
+offset_bottom = 782.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.003921569, 0.02745098, 0, 0.3254902)
+
+[node name="RestartButton" type="Button" parent="GameOverUI/Background" unique_id=1888850011]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -165.5
+offset_top = -80.5
+offset_right = 165.5
+offset_bottom = 80.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 52
+text = "Replay
+"
+
+[node name="Title" type="Label" parent="GameOverUI/Background" unique_id=2004401156]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -165.0
+offset_top = 52.5
+offset_right = 129.0
+offset_bottom = 149.5
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 57
+text = "END Game"
+
+[node name="FinalScoreLabel" type="Label" parent="GameOverUI/Background" unique_id=310059077]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -330.0
+offset_top = -513.0
+offset_right = 293.0
+offset_bottom = -430.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+
+[node name="QuitButton" type="Button" parent="GameOverUI/Background" unique_id=1652465710]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -270.0
+offset_top = 217.5
+offset_right = 270.0
+offset_bottom = 353.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "Retrun to Village
+"
+icon = ExtResource("9_m71vt")
+
+[connection signal="pressed" from="BackgroundPrincipal/Button" to="BackgroundPrincipal" method="_on_button_pressed"]
+[connection signal="pressed" from="GameOverUI/Background/RestartButton" to="GameOverUI" method="_on_restart_button_pressed"]
+[connection signal="pressed" from="GameOverUI/Background/QuitButton" to="GameOverUI" method="_on_quit_button_pressed"]
