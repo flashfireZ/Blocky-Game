@@ -1,6 +1,28 @@
+# Godot-specific
 .import/
-.export/
-mono/
+export.cfg
+export_presets.cfg
+
+# Mono 
+.mono/
+data_*/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
 *.tmp
+*.temp
 *.log
-*.translation
+
+# Backup files
+*.old
+*.bak
+
+# Editor-specific
+.vscode/
+.idea/
+
+# Godot cache
+.godot/
