@@ -40,7 +40,7 @@ func set_player_ids(my_id: String, opponent_id: String):
 
 func setup_scene_refs():
 	_grid  = get_tree().root.find_child("GridMultiplayer",  true, false)
-	_timer = get_tree().root.find_child("GameTimerManager", true, false)
+	_timer = get_tree().root.find_child("GameStateManager", true, false)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  POLLING

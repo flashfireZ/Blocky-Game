@@ -13,3 +13,8 @@ res://scenes/minigames/BlockGame_Multiplayer/lobby.gd
 res://scenes/minigames/BlockGame_Multiplayer/piece_manager_multiplayer.gd
 res://scenes/minigames/BlockGame_Multiplayer/main_block_game_multiplayer.gd
 res://scenes/minigames/BlockGame_Multiplayer/piece_multiplayer.gd
+res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_12.tscn
+res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_9.tscn
+res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_6.tscn
+res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_2.tscn
+res://scenes/minigames/BlockGame_Multiplayer/flame_bar.gd

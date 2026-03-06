@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c0vxycwik6nsr"]
 
-[ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/Piece.tscn" id="1_fubc4"]
+[ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/PieceM.tscn" id="1_fubc4"]
 [ext_resource type="PackedScene" uid="uid://cf2gpftvxes8c" path="res://scenes/minigames/BlockGame_Multiplayer/BlockMultiplayer.tscn" id="2_vuq8h"]
 
 [node name="Piece_Square2x2" unique_id=273111929 instance=ExtResource("1_fubc4")]

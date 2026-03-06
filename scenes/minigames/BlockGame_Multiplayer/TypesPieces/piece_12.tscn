@@ -1,12 +1,9 @@
 [gd_scene format=3 uid="uid://dtajuwfacwbgf"]
 
-[ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/Piece.tscn" id="1_et6w5"]
+[ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/PieceM.tscn" id="1_et6w5"]
 [ext_resource type="PackedScene" uid="uid://cf2gpftvxes8c" path="res://scenes/minigames/BlockGame_Multiplayer/BlockMultiplayer.tscn" id="2_sykx7"]
 
 [node name="Piece_Rect_2x3" unique_id=273111929 instance=ExtResource("1_et6w5")]
-
-[node name="Block2" parent="." index="1" unique_id=654465343]
-position = Vector2(0, 120)
 
 [node name="Block3" parent="." index="2" unique_id=1517482272]
 position = Vector2(240, 0)

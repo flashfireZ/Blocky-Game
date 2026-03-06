@@ -5,11 +5,12 @@
 [ext_resource type="Script" uid="uid://d1e5ocbio5b13" path="res://scenes/minigames/BlockGame_Multiplayer/grid_multiplayer.gd" id="2_asxbh"]
 [ext_resource type="Script" uid="uid://dgju3wrppvofj" path="res://scenes/minigames/BlockGame_Multiplayer/piece_manager_multiplayer.gd" id="3_o3l3v"]
 [ext_resource type="FontFile" uid="uid://bd7p25cgyjcdt" path="res://assets/fonts/LuckiestGuy-Regular.ttf" id="4_nky6x"]
-[ext_resource type="PackedScene" uid="uid://c3i0fnnpve7rx" path="res://scenes/minigames/BlockGame/TypesPieces/piece_2.tscn" id="5_3sh80"]
+[ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/PieceM.tscn" id="5_3sh80"]
 [ext_resource type="Script" uid="uid://dugy6tp8n2yqf" path="res://scripts/minigame_blocky/game_over_ui.gd" id="5_23nm4"]
 [ext_resource type="Texture2D" uid="uid://1d7eexj3bkmg" path="res://icon.svg" id="6_3sh80"]
-[ext_resource type="PackedScene" uid="uid://dvht6ypjcnc1x" path="res://scenes/minigames/BlockGame/TypesPieces/piece_3.tscn" id="7_vjgw5"]
-[ext_resource type="PackedScene" uid="uid://bg1gqtc6xl2ig" path="res://scenes/minigames/BlockGame/TypesPieces/piece_4.tscn" id="8_y10i3"]
+[ext_resource type="PackedScene" uid="uid://cjglfnr2g545c" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_3M.tscn" id="6_6l4vd"]
+[ext_resource type="PackedScene" uid="uid://bg3j0h8tys20y" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_2M.tscn" id="7_1wyxg"]
+[ext_resource type="Script" uid="uid://cuc7pdivr0n47" path="res://scenes/minigames/BlockGame_Multiplayer/flame_bar.gd" id="12_6l4vd"]
 [ext_resource type="Script" uid="uid://cqncrpopjqynw" path="res://scenes/minigames/BlockGame_Multiplayer/game_state_manager.gd" id="37_vjgw5"]
 
 [node name="MainBlockGame" type="Node2D" unique_id=1230392537]
@@ -53,7 +54,7 @@ script = ExtResource("2_asxbh")
 z_index = 10
 position = Vector2(0, 1500)
 script = ExtResource("3_o3l3v")
-piece_templates = Array[PackedScene]([ExtResource("5_3sh80"), ExtResource("7_vjgw5"), ExtResource("8_y10i3")])
+piece_templates = Array[PackedScene]([ExtResource("5_3sh80"), ExtResource("6_6l4vd"), ExtResource("7_1wyxg")])
 
 [node name="ScoreLabel" type="Label" parent="." unique_id=1413456945]
 offset_left = 239.0
@@ -202,6 +203,10 @@ offset_right = 904.0
 offset_bottom = 129.0
 theme_override_font_sizes/font_size = 29
 text = "ID Opponent"
+
+[node name="Node2D" type="Node2D" parent="." unique_id=1059243946]
+script = ExtResource("12_6l4vd")
+bar_position = Vector2(600, 1780)
 
 [connection signal="pressed" from="BackgroundPrincipal/Button" to="BackgroundPrincipal" method="_on_button_pressed"]
 [connection signal="pressed" from="GameOverUI/Background/RestartButton" to="GameOverUI" method="_on_restart_button_pressed"]

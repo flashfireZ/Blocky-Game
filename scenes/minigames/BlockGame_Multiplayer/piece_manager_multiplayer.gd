@@ -40,7 +40,7 @@ func check_game_over():
 	# Si on est en train de spawn, on ne fait rien
 	if is_spawning: return
 	
-	var grid = get_tree().root.find_child("Grid", true, false)
+	var grid = get_tree().root.find_child("GridMultiplayer", true, false)
 	if not grid: return
 
 	var pieces_remaining = []

@@ -1,6 +1,7 @@
 extends Node2D
 
-@export var cell_scene : PackedScene = preload("res://scenes/minigames/BlockGame/Cell.tscn")
+@export var cell_scene  : PackedScene = preload("res://scenes/minigames/BlockGame/Cell.tscn")
+@export var block_scene : PackedScene = preload("res://scenes/minigames/BlockGame_Multiplayer/BlockMultiplayer.tscn")
 
 var grid_rows = 12   # nombre de lignes
 var grid_cols = 8    # nombre de colonnes
@@ -9,8 +10,21 @@ var grid_positions = []
 var grid_data      = []
 var score          = 0
 
-# Stockage de l'origine de la grille pour les calculs optimisés
-var grid_start_pos : Vector2 
+# ─── Stats multijoueur ────────────────────────────────────────────────────────
+var player_hp      : int = 3000
+var player_shield  : int = 0
+var opponent_hp    : int = 3000
+var opponent_shield: int = 0
+
+signal game_over(winner: String)
+
+# !! CORRECTION BUG CRITIQUE !!
+# On stocke l'origine GLOBALE de la grille (coin haut-gauche de la cellule 0,0).
+# L'ancienne variable grid_start_pos était une coordonnée LOCALE à GridMultiplayer.
+# Si GridMultiplayer n'est pas à (0,0) dans la scène, get_cell_coordinates() calculait
+# de mauvaises cases → les pièces draguées vers la zone bleue arrivaient en zone rouge.
+var grid_global_origin : Vector2
+var grid_start_pos     : Vector2   # conservé pour la génération (position locale)
 
 @onready var score_label    = get_tree().root.find_child("ScoreLabel",        true, false)
 @onready var particles_base = get_tree().root.find_child("ExplosionParticles", true, false)
@@ -19,11 +33,11 @@ var grid_start_pos : Vector2
 # ─── Tweens & Combo ───────────────────────────────────────────────────────────
 var combo_streak: int = 0
 var _combo_tween: Tween = null
-var _score_tween: Tween = null # Ajout pour éviter les conflits d'animation du score
+var _score_tween: Tween = null
 
 # ─── Preview ──────────────────────────────────────────────────────────────────
 var preview_nodes: Array = []
-var _preview_last_color: Color = Color(-1, -1, -1)  # sentinelle
+var _preview_last_color: Color = Color(-1, -1, -1)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  READY
@@ -68,10 +82,9 @@ func update_score(amount: int):
 
 	score_label.text = "Score: " + str(score)
 
-	# Tuer proprement l'animation de score précédente
 	if _score_tween and _score_tween.is_running():
 		_score_tween.kill()
-		
+
 	_score_tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
 	_score_tween.tween_property(score_label, "scale", Vector2(1.18, 1.18), 0.07)
 	_score_tween.tween_property(score_label, "scale", Vector2(1.0,  1.0),  0.12)
@@ -109,22 +122,14 @@ func show_combo_label(total_multi: int):
 		_combo_tween.kill()
 
 	_combo_tween = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
-
-	# 1) POP
 	_combo_tween.tween_property(combo_label, "scale", Vector2(1.15, 1.15), 0.35)
-
-	# 2) Rebond
 	_combo_tween.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_BOUNCE)
 	_combo_tween.tween_property(combo_label, "scale", Vector2(1.0, 1.0), 0.2)
-
-	# 3) Wobble
 	_combo_tween.set_trans(Tween.TRANS_SINE)
 	_combo_tween.tween_property(combo_label, "rotation_degrees",  6.0, 0.06)
 	_combo_tween.tween_property(combo_label, "rotation_degrees", -6.0, 0.06)
 	_combo_tween.tween_property(combo_label, "rotation_degrees",  3.0, 0.05)
 	_combo_tween.tween_property(combo_label, "rotation_degrees",  0.0, 0.05)
-
-	# 4) Pause puis Disparition (Fade out) directement dans le même tween (Évite le Timer buggé !)
 	_combo_tween.tween_interval(1.6)
 	_combo_tween.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
 	_combo_tween.tween_property(combo_label, "modulate:a", 0.0, 0.35)
@@ -164,21 +169,33 @@ func center_and_generate_grid():
 					rect.material.set_shader_parameter("fill_color",   Color(0.4, 0.051, 0.894, 0.867))
 					rect.material.set_shader_parameter("border_color", Color(0.2, 0.02, 0.831, 1.0))
 
+	# !! CORRECTION BUG CRITIQUE !!
+	# On capture l'origine GLOBALE de la grille APRÈS que toutes les cellules
+	# ont été ajoutées à la scène (global_position est fiable à ce stade).
+	grid_global_origin = grid_positions[0][0]
+	print("[Grid] Origine globale : ", grid_global_origin, " | GridMultiplayer.global_pos : ", global_position)
+
 # ─── Snap / coordonnées ───────────────────────────────────────────────────────
 func get_cell_coordinates(target_pos: Vector2):
-	# OPTIMISATION : Calcul mathématique O(1) au lieu de boucler sur toute la grille O(N)
-	var local_pos = target_pos - grid_start_pos
-	
-	# On évite les erreurs de signe en bloquant les valeurs hors-champ avant de diviser
+	# !! CORRECTION BUG CRITIQUE !!
+	# AVANT : var local_pos = target_pos - grid_start_pos
+	#   → grid_start_pos est une coordonnée LOCALE à GridMultiplayer.
+	#   → Si GridMultiplayer est décalé dans la scène, le calcul est FAUX.
+	#
+	# APRÈS : var local_pos = target_pos - grid_global_origin
+	#   → grid_global_origin est la position GLOBALE réelle de la cellule (0,0).
+	#   → Correct quel que soit le placement de GridMultiplayer dans la scène.
+	var local_pos = target_pos - grid_global_origin
+
 	if local_pos.x < -cell_dim / 2.0 or local_pos.y < -cell_dim / 2.0:
 		return null
-		
+
 	var grid_x = int(round(local_pos.x / cell_dim))
 	var grid_y = int(round(local_pos.y / cell_dim))
 
 	if grid_x >= 0 and grid_x < grid_cols and grid_y >= 0 and grid_y < grid_rows:
 		return Vector2(grid_x, grid_y)
-		
+
 	return null
 
 func get_snapped_position(target_pos: Vector2) -> Vector2:
@@ -202,25 +219,23 @@ func show_preview(block_top_left_positions: Array, piece_color: Color, source_co
 		var dup: ColorRect = source_color_rect.duplicate()
 		if dup.material:
 			dup.material = dup.material.duplicate()
-		
 		dup.z_index = 50
 		add_child(dup)
 		preview_nodes.append(dup)
 
-	for node in preview_nodes: node.visible = false
+	for node in preview_nodes:
+		node.visible = false
 
 	var snapped_coords = []
 	var valid = true
 
 	for top_left in block_top_left_positions:
-		var center = top_left + Vector2(cell_dim, cell_dim) * 0.5
-		var coords = get_cell_coordinates(center)
+		var coords = get_cell_coordinates(top_left)
 		if coords == null:
 			valid = false
 			break
 		snapped_coords.append(coords)
 
-	# On utilise notre super validateur !
 	if valid:
 		valid = is_placement_valid(snapped_coords)
 
@@ -229,14 +244,14 @@ func show_preview(block_top_left_positions: Array, piece_color: Color, source_co
 		node.visible = true
 		if valid and i < snapped_coords.size():
 			node.global_position = grid_positions[int(snapped_coords[i].y)][int(snapped_coords[i].x)]
-			node.modulate = Color(1, 1, 1, 0.40) 
+			node.modulate = Color(1, 1, 1, 0.40)
 		else:
 			node.global_position = block_top_left_positions[i]
-			node.modulate = Color(1.5, 0.199, 0.199, 0.408) 
+			node.modulate = Color(1.5, 0.199, 0.199, 0.408)
 
 func hide_preview():
 	_clear_preview_nodes()
-	_preview_last_color = Color(-1, -1, -1) 
+	_preview_last_color = Color(-1, -1, -1)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  LIGNES & COMBO
@@ -301,8 +316,14 @@ func clear_line(type, index):
 				var t = create_tween().set_parallel(true)
 				t.tween_property(child, "scale", Vector2.ZERO, 0.15)
 				t.tween_property(child, "modulate:a", 0.0, 0.15)
-				# CORRECTION DU BUG DE CRASH ICI :
 				t.chain().tween_callback(child.queue_free)
+
+		# !! CORRECTION : Remettre le fond de la cellule visible après avoir
+		# effacé les blocs posés. Sans ça, la grille reste trouée visuellement.
+		var bg = cell.get_node_or_null("Cell")
+		if bg:
+			bg.visible  = true
+			bg.modulate = Color.WHITE
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  UTILITAIRES
@@ -316,9 +337,7 @@ func spawn_particles(pos: Vector2):
 		get_tree().create_timer(1.0).timeout.connect(p.queue_free)
 
 func can_fit_piece(piece_node: Node2D) -> bool:
-	var block_offsets = []
 	var blocks = []
-
 	for child in piece_node.get_children():
 		if child is Node2D:
 			blocks.append(child)
@@ -326,101 +345,195 @@ func can_fit_piece(piece_node: Node2D) -> bool:
 		return false
 
 	var first_pos = blocks[0].position
+	var raw_offsets = []
 	for block in blocks:
-		block_offsets.append(block.position - first_pos)
+		raw_offsets.append(block.position - first_pos)
 
-	for y in range(grid_rows):
+	# !! CORRECTION : Normalisation des offsets en Y !!
+	# Sans ça, si le premier bloc n'est pas celui le plus haut dans la pièce,
+	# les offsets négatifs font croire que la pièce chevauche zones rouge et bleue
+	# → is_placement_valid() retourne false → faux game-over dès le début.
+	var min_y_cells = 0
+	for off in raw_offsets:
+		var oy = int(round(off.y / cell_dim))
+		if oy < min_y_cells:
+			min_y_cells = oy
+
+	var normalized_offsets = []
+	for off in raw_offsets:
+		normalized_offsets.append(Vector2(off.x, off.y - min_y_cells * float(cell_dim)))
+
+	# On teste uniquement la zone bleue (y >= 6) : zone du joueur local
+	for y in range(6, grid_rows):
 		for x in range(grid_cols):
-			if _can_place_at_coords(x, y, block_offsets):
+			if _can_place_at_coords(x, y, normalized_offsets):
 				return true
 
 	return false
 
 func is_placement_valid(coords: Array) -> bool:
-	if coords.is_empty(): return false
-	
-	var is_top = false
+	if coords.is_empty():
+		print("[DEBUG] is_placement_valid: coords VIDE")
+		return false
+
+	var is_top    = false
 	var is_bottom = false
-	
+
 	# 1. Vérifier les limites et dans quelle(s) zone(s) on se trouve
 	for c in coords:
 		if c.x < 0 or c.x >= grid_cols or c.y < 0 or c.y >= grid_rows:
-			return false # Hors de la grille
-			
-		if c.y < 6: is_top = true
+			print("[DEBUG] is_placement_valid: hors grille -> ", c)
+			return false
+
+		if c.y < 6: is_top    = true
 		else:       is_bottom = true
-			
+
+	print("[DEBUG] is_placement_valid: is_top=", is_top, " is_bottom=", is_bottom)
+
 	# Interdit de placer une pièce à cheval entre les deux zones
 	if is_top and is_bottom:
+		print("[DEBUG] is_placement_valid: cheval entre les deux zones")
 		return false
-		
-	# 2. RÈGLE ZONE JOUEUR (Bas) : Toutes les cases doivent être VIDES (0)
+
+	# 2. RÈGLE ZONE JOUEUR (Bas, zone bleue) : Toutes les cases doivent être VIDES (0)
 	if is_bottom:
 		for c in coords:
-			if grid_data[int(c.y)][int(c.x)] != 0:
+			var val = grid_data[int(c.y)][int(c.x)]
+			if val != 0:
+				print("[DEBUG] is_placement_valid: case occupée en bas coords=", c, " val=", val)
 				return false
 		return true
-		
-	# 3. RÈGLE ZONE D'ATTAQUE (Haut) : Doit recouvrir PARFAITEMENT une pièce ennemie (2)
+
+	# 3. RÈGLE ZONE D'ATTAQUE (Haut, zone rouge) : Doit recouvrir PARFAITEMENT une pièce ennemie (2)
 	if is_top:
 		for c in coords:
 			if grid_data[int(c.y)][int(c.x)] != 2:
-				return false # Ne touche pas un bloc ennemi
-				
-		# On récupère la forme entière de l'ennemi en ciblant le premier bloc de notre pièce
+				print("[DEBUG] is_placement_valid: case haut pas ennemie coords=", c, " val=", grid_data[int(c.y)][int(c.x)])
+				return false
+
 		var enemy_shape = _get_connected_opponent_cells(int(coords[0].x), int(coords[0].y))
-		
-		# Si notre pièce n'a pas exactement le même nombre de blocs que la forme ennemie,
-		# ça veut dire qu'elle est trop petite (ex: I sur un L) ou trop grande.
+
 		if coords.size() != enemy_shape.size():
+			print("[DEBUG] is_placement_valid: taille pièce=", coords.size(), " != ennemi=", enemy_shape.size())
 			return false
-			
+
 		return true
 
+	print("[DEBUG] is_placement_valid: aucune zone détectée (ne devrait pas arriver)")
 	return false
 
-# On met à jour l'ancienne fonction pour qu'elle utilise notre nouveau validateur
 func _can_place_at_coords(start_x: int, start_y: int, offsets: Array) -> bool:
 	var coords = []
 	for offset in offsets:
 		var tx = start_x + int(round(offset.x / cell_dim))
 		var ty = start_y + int(round(offset.y / cell_dim))
 		coords.append(Vector2(tx, ty))
-		
 	return is_placement_valid(coords)
-	
-
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  MÉCANIQUE D'ATTAQUE (ZONE Y < 6)
 # ══════════════════════════════════════════════════════════════════════════════
 
 func _get_connected_opponent_cells(start_x: int, start_y: int) -> Array:
-	var visited = {} # Dictionnaire pour des performances ultra-rapides O(1)
-	var queue = [Vector2(start_x, start_y)]
+	var visited = {}
+	var queue   = [Vector2(start_x, start_y)]
 	var connected_shape = []
-	
+
 	while queue.size() > 0:
 		var current = queue.pop_front()
-		
-		# Si on a déjà vérifié cette case, on passe
+
 		if visited.has(current): continue
 		visited[current] = true
-		
-		# On s'assure de ne pas sortir de la grille ni de la zone d'attaque (y < 6)
+
 		if current.x < 0 or current.x >= grid_cols or current.y < 0 or current.y >= 6:
 			continue
-			
-		# Si c'est un bloc adverse, on l'ajoute à la forme et on check ses voisins
+
 		if grid_data[int(current.y)][int(current.x)] == 2:
 			connected_shape.append(current)
-			
-			queue.append(Vector2(current.x + 1, current.y)) # Droite
-			queue.append(Vector2(current.x - 1, current.y)) # Gauche
-			queue.append(Vector2(current.x, current.y + 1)) # Bas
-			queue.append(Vector2(current.x, current.y - 1)) # Haut
-			
+			queue.append(Vector2(current.x + 1, current.y))
+			queue.append(Vector2(current.x - 1, current.y))
+			queue.append(Vector2(current.x, current.y + 1))
+			queue.append(Vector2(current.x, current.y - 1))
+
 	return connected_shape
-	
+
 func deal_damage(amount: int):
 	print("Dégâts infligés à l'adversaire : ", amount)
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  MULTIJOUEUR
+# ══════════════════════════════════════════════════════════════════════════════
+func serialize_player_state() -> Dictionary:
+	return {"hp": player_hp, "shield": player_shield}
+
+func sync_opponent_stats(hp: int, shield: int):
+	opponent_hp     = hp
+	opponent_shield = shield
+
+func place_piece(coords: Array, color: Color, is_attack: bool, dmg_multi: float, _is_local: bool):
+	for c in coords:
+		var cx = int(c.x)
+		var cy = int(c.y)
+		if cx < 0 or cx >= grid_cols or cy < 0 or cy >= grid_rows:
+			continue
+		grid_data[cy][cx] = 2
+		var cell = get_node_or_null("Cell_" + str(cx) + "_" + str(cy))
+		if cell:
+			# !! CORRECTION : On instancie BlockMultiplayer.tscn pour avoir le shader,
+			# au lieu d'un ColorRect.new() brut qui affiche une couleur plate sans texture.
+			var block: Node2D
+			if block_scene:
+				block = block_scene.instantiate()
+				if block.has_method("set_color"):
+					block.set_color(color)
+			else:
+				# fallback si block_scene non assigné dans l'inspecteur
+				var cr = ColorRect.new()
+				cr.size  = Vector2(cell_dim, cell_dim)
+				cr.color = color
+				block    = cr
+			block.z_index = 10
+			# Le fond de la cellule reste visible intentionnellement
+			cell.add_child(block)
+	check_lines()
+	if is_attack:
+		var dmg = int(50 * dmg_multi)
+		player_hp -= dmg
+		print("Dégâts reçus : ", dmg, " | HP restants : ", player_hp)
+		if player_hp <= 0:
+			emit_signal("game_over", "opponent")
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  SYSTÈME DE FLAMMES (type Élixir Clash Royale)
+#  - Max : 9 flammes
+#  - Régénération : 1 flamme/seconde
+#  - Coût d'une pièce : égal à son nombre de blocs
+# ══════════════════════════════════════════════════════════════════════════════
+const FLAME_MAX      : int   = 9
+const FLAME_REGEN    : float = 1.0   # secondes par flamme
+
+var flames         : float = float(FLAME_MAX)   # valeur courante (float pour regen lisse)
+var _flame_timer   : float = 0.0
+
+signal flames_changed(current: int, maximum: int)
+
+func _process(delta: float):
+	if flames < float(FLAME_MAX):
+		_flame_timer += delta
+		if _flame_timer >= FLAME_REGEN:
+			_flame_timer -= FLAME_REGEN
+			flames = min(flames + 1.0, float(FLAME_MAX))
+			emit_signal("flames_changed", int(flames), FLAME_MAX)
+
+# Retourne true si le joueur a assez de flammes, et les dépense
+func can_spend_flames(cost: int) -> bool:
+	if int(flames) >= cost:
+		flames -= float(cost)
+		_flame_timer = 0.0   # reset le timer à chaque dépense
+		emit_signal("flames_changed", int(flames), FLAME_MAX)
+		return true
+	return false
+
+# Pour l'affichage en temps réel (barre lisse)
+func get_flames_exact() -> float:
+	return flames

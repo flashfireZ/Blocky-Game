@@ -17,23 +17,25 @@ offset_bottom = 1920.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(1, 0.34509805, 1, 1)
+color = Color(0, 0, 0, 1)
 
 [node name="CancelBtn" type="Button" parent="." unique_id=1543166030]
 layout_mode = 0
-offset_left = 440.0
-offset_top = 646.0
-offset_right = 575.0
-offset_bottom = 686.0
+offset_left = 375.0
+offset_top = 688.0
+offset_right = 543.0
+offset_bottom = 765.0
+theme_override_font_sizes/font_size = 50
 text = "Cancel
 "
 
 [node name="BattleBtn" type="Button" parent="." unique_id=1454222976]
 layout_mode = 0
-offset_left = 453.0
-offset_top = 592.0
+offset_left = 375.0
+offset_top = 519.0
 offset_right = 559.0
 offset_bottom = 632.0
+theme_override_font_sizes/font_size = 50
 text = "Battle
 
 "
