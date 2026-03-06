@@ -150,15 +150,6 @@ func check_placement():
 	if blocks.is_empty():
 		return_to_start(); return
 
-	# ── Vérification des flammes ─────────────────────────────────────────────
-	# Coût = nombre de blocs. On vérifie ET dépense en une seule fois.
-	var flame_cost = blocks.size()
-	if not grid.can_spend_flames(flame_cost):
-		print("[PIECE] Pas assez de flammes (coût=", flame_cost, " dispo=", int(grid.flames), ")")
-		_shake_feedback()
-		return_to_start()
-		return
-	print("[PIECE] Flammes dépensées : ", flame_cost, " | reste : ", int(grid.flames))
 
 	var placement_data: Array = []
 	var coords_only:    Array = []

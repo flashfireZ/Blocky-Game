@@ -10,7 +10,6 @@
 [ext_resource type="Texture2D" uid="uid://1d7eexj3bkmg" path="res://icon.svg" id="6_3sh80"]
 [ext_resource type="PackedScene" uid="uid://cjglfnr2g545c" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_3M.tscn" id="6_6l4vd"]
 [ext_resource type="PackedScene" uid="uid://bg3j0h8tys20y" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_2M.tscn" id="7_1wyxg"]
-[ext_resource type="Script" uid="uid://cuc7pdivr0n47" path="res://scenes/minigames/BlockGame_Multiplayer/flame_bar.gd" id="12_6l4vd"]
 [ext_resource type="Script" uid="uid://cqncrpopjqynw" path="res://scenes/minigames/BlockGame_Multiplayer/game_state_manager.gd" id="37_vjgw5"]
 
 [node name="MainBlockGame" type="Node2D" unique_id=1230392537]
@@ -54,7 +53,7 @@ script = ExtResource("2_asxbh")
 z_index = 10
 position = Vector2(0, 1500)
 script = ExtResource("3_o3l3v")
-piece_templates = Array[PackedScene]([ExtResource("5_3sh80"), ExtResource("6_6l4vd"), ExtResource("7_1wyxg")])
+piece_templates = Array[PackedScene]([ExtResource("7_1wyxg"), ExtResource("6_6l4vd"), ExtResource("5_3sh80")])
 
 [node name="ScoreLabel" type="Label" parent="." unique_id=1413456945]
 offset_left = 239.0
@@ -203,10 +202,6 @@ offset_right = 904.0
 offset_bottom = 129.0
 theme_override_font_sizes/font_size = 29
 text = "ID Opponent"
-
-[node name="Node2D" type="Node2D" parent="." unique_id=1059243946]
-script = ExtResource("12_6l4vd")
-bar_position = Vector2(600, 1780)
 
 [connection signal="pressed" from="BackgroundPrincipal/Button" to="BackgroundPrincipal" method="_on_button_pressed"]
 [connection signal="pressed" from="GameOverUI/Background/RestartButton" to="GameOverUI" method="_on_restart_button_pressed"]

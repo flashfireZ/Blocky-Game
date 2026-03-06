@@ -504,36 +504,3 @@ func place_piece(coords: Array, color: Color, is_attack: bool, dmg_multi: float,
 			emit_signal("game_over", "opponent")
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  SYSTÈME DE FLAMMES (type Élixir Clash Royale)
-#  - Max : 9 flammes
-#  - Régénération : 1 flamme/seconde
-#  - Coût d'une pièce : égal à son nombre de blocs
-# ══════════════════════════════════════════════════════════════════════════════
-const FLAME_MAX      : int   = 9
-const FLAME_REGEN    : float = 1.0   # secondes par flamme
-
-var flames         : float = float(FLAME_MAX)   # valeur courante (float pour regen lisse)
-var _flame_timer   : float = 0.0
-
-signal flames_changed(current: int, maximum: int)
-
-func _process(delta: float):
-	if flames < float(FLAME_MAX):
-		_flame_timer += delta
-		if _flame_timer >= FLAME_REGEN:
-			_flame_timer -= FLAME_REGEN
-			flames = min(flames + 1.0, float(FLAME_MAX))
-			emit_signal("flames_changed", int(flames), FLAME_MAX)
-
-# Retourne true si le joueur a assez de flammes, et les dépense
-func can_spend_flames(cost: int) -> bool:
-	if int(flames) >= cost:
-		flames -= float(cost)
-		_flame_timer = 0.0   # reset le timer à chaque dépense
-		emit_signal("flames_changed", int(flames), FLAME_MAX)
-		return true
-	return false
-
-# Pour l'affichage en temps réel (barre lisse)
-func get_flames_exact() -> float:
-	return flames
