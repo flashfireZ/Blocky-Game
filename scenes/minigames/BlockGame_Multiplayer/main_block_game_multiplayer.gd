@@ -87,6 +87,10 @@ func _on_game_finished(winner_id: String):
 	var gsm = get_node_or_null("GameStateManager")
 	if gsm and gsm.has_method("stop_timer"):
 		gsm.stop_timer()
+	
+	var delta = 2 if winner_id == FirebaseManager.my_pid else -1
+	var pseudo = "Joueur"  # remplace par ton système de pseudo
+	FirebaseManager.leaderboard_update(pseudo, delta)
 
 	# 2. Afficher l'UI de résultat
 	var ui = get_tree().root.find_child("GameOverUI", true, false)

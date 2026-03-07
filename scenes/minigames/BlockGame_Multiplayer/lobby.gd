@@ -33,9 +33,24 @@ func _ready():
 	print("[Lobby] Démarré — player_id : ", _player_id)
 
 # ══════════════════════════════════════════════════════════════════════════════
-func _on_battle_btn_pressed(): _join_queue()
-func _on_cancel_btn_pressed(): _leave_queue()
+# Si le joueur n'a pas encore de pseudo → ouvrir le popup avant de lancer.
+func _on_battle_btn_pressed():
+	var pseudo : String = _get_saved_pseudo()
+	if pseudo == "":
+		_open_pseudo_popup()
+	else:
+		_join_queue()
 
+func _on_cancel_btn_pressed(): _leave_queue()
+const PSEUDO_POPUP_SCENE : String = "res://scenes/ui/PseudoPopup.tscn"
+
+func _open_pseudo_popup():
+	var popup = load(PSEUDO_POPUP_SCENE).instantiate()
+	popup.setup(_player_id)
+	popup.pseudo_confirmed.connect(func(_pseudo: String):
+		_join_queue()   # popup se supprime tout seul → lancer la recherche
+	)
+	add_child(popup)
 # ══════════════════════════════════════════════════════════════════════════════
 #  QUEUE
 # ══════════════════════════════════════════════════════════════════════════════
@@ -247,11 +262,31 @@ func _set_ui_searching():
 # ══════════════════════════════════════════════════════════════════════════════
 #  IDs
 # ══════════════════════════════════════════════════════════════════════════════
+
+# Persiste l'ID dans user://player.cfg (généré une seule fois)
 func _generate_id() -> String:
+	var config = ConfigFile.new()
+	var path   = "user://player.cfg"
+
+	if config.load(path) == OK:
+		var saved = config.get_value("player", "id", "")
+		if saved != "": return saved
+
 	const CHARS = "abcdefghijklmnopqrstuvwxyz0123456789"
 	var id = ""
 	for _i in range(12): id += CHARS[randi() % CHARS.length()]
+
+	config.set_value("player", "id", id)
+	config.save(path)
 	return id
+
+# ── 2. Ajoute cette fonction — lit le pseudo sauvegardé localement ───────────
+func _get_saved_pseudo() -> String:
+	var config = ConfigFile.new()
+	if config.load("user://player.cfg") == OK:
+		return config.get_value("player", "pseudo", "")
+	return ""
+
 
 func _generate_game_id() -> String:
 	const CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
@@ -264,3 +299,9 @@ func _notification(what):
 		if _in_queue:
 			FirebaseManager.fb_delete("/matchmaking/queue/%s.json" % _player_id)
 			print("[Lobby] Nettoyage queue (fermeture)")
+
+const LEADERBOARD_SCENE : String = "res://scenes/ui/LeaderboardScreen.tscn"
+
+func _on_leaderboard_btn_pressed():
+	var screen = load(LEADERBOARD_SCENE).instantiate()
+	get_tree().root.add_child(screen)    # par-dessus le lobby, pas de changement de scène

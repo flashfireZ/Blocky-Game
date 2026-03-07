@@ -4,7 +4,11 @@
 
 [node name="Lobby" type="Control" unique_id=1785337675]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_tjsx0")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1714412204]
@@ -12,40 +16,71 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 1080.0
-offset_bottom = 1920.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0, 0, 0, 1)
+color = Color(0, 0, 0, 0.37254903)
 
 [node name="CancelBtn" type="Button" parent="." unique_id=1543166030]
-layout_mode = 0
-offset_left = 375.0
-offset_top = 688.0
-offset_right = 543.0
-offset_bottom = 765.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -84.0
+offset_top = -38.5
+offset_right = 84.0
+offset_bottom = 38.5
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 50
 text = "Cancel
 "
 
-[node name="BattleBtn" type="Button" parent="." unique_id=1454222976]
+[node name="LeaderboardBtn" type="Button" parent="." unique_id=627481410]
 layout_mode = 0
-offset_left = 375.0
-offset_top = 519.0
-offset_right = 559.0
-offset_bottom = 632.0
+offset_left = 749.0
+offset_top = 84.0
+offset_right = 1054.0
+offset_bottom = 161.0
+theme_override_font_sizes/font_size = 50
+text = "leaderboard
+"
+
+[node name="BattleBtn" type="Button" parent="." unique_id=1454222976]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -97.0
+offset_top = -193.0
+offset_right = 87.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 50
 text = "Battle
 
 "
 
 [node name="StatusLabel" type="Label" parent="." unique_id=1684574730]
-layout_mode = 0
-offset_left = 375.0
-offset_top = 440.0
-offset_right = 629.0
-offset_bottom = 483.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -151.0
+offset_top = -38.0
+offset_right = 151.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
 
 [connection signal="pressed" from="CancelBtn" to="." method="_on_cancel_btn_pressed"]
+[connection signal="pressed" from="LeaderboardBtn" to="." method="_on_leaderboard_btn_pressed"]
 [connection signal="pressed" from="BattleBtn" to="." method="_on_battle_btn_pressed"]

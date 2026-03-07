@@ -264,3 +264,46 @@ func _color_to_hex(c: Color) -> String:
 
 func _hex_to_color(h: String) -> Color:
 	return Color(h) if h.begins_with("#") else Color.WHITE
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  LEADERBOARD
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Appelé une fois au lancement (ou après chaque partie)
+# Crée l'entrée si elle n'existe pas, sinon met à jour uniquement les trophées
+func leaderboard_update(pseudo: String, trophy_delta: int):
+	fb_get("/leaderboard/%s.json" % my_pid, func(data):
+		var current_trophies : int = 0
+
+		if typeof(data) == TYPE_DICTIONARY:
+			current_trophies = int(data.get("trophies", 0))
+
+		var new_trophies = max(0, current_trophies + trophy_delta)
+		var payload = JSON.stringify({
+			"pseudo":   pseudo,
+			"trophies": new_trophies
+		})
+		fb_patch("/leaderboard/%s.json" % my_pid, payload)
+		print("[Leaderboard] %s → %d trophées" % [pseudo, new_trophies])
+	)
+
+# Récupère le top N joueurs (lecture unique, trié côté client)
+func leaderboard_get_top(n: int, callback: Callable):
+	fb_get("/leaderboard.json", func(data):
+		if typeof(data) != TYPE_DICTIONARY:
+			callback.call([])
+			return
+
+		var entries : Array = []
+		for pid in data.keys():
+			var entry = data[pid]
+			if typeof(entry) != TYPE_DICTIONARY: continue
+			entries.append({
+				"pid":      pid,
+				"pseudo":   entry.get("pseudo",   "???"),
+				"trophies": int(entry.get("trophies", 0))
+			})
+
+		entries.sort_custom(func(a, b): return a["trophies"] > b["trophies"])
+		callback.call(entries.slice(0, n))
+	)

@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://qmpi7gd41tfa"]
+
+[ext_resource type="Script" uid="uid://crs450pmtwvpl" path="res://scenes/ui/pseudo_popup.gd" id="1_nyrrh"]
+
+[node name="PseudoPopup" type="Control" unique_id=1034908774]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nyrrh")
+
+[node name="Panel" type="Panel" parent="." unique_id=1653910954]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -250.0
+offset_top = -250.0
+offset_right = 250.0
+offset_bottom = 250.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PseudoInput" type="LineEdit" parent="Panel" unique_id=1191003168]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 196.0
+offset_right = 420.0
+offset_bottom = 264.0
+text = "Pseudo :"
+
+[node name="ConfirmBtn" type="Button" parent="Panel" unique_id=1832417082]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 324.0
+offset_right = 362.0
+offset_bottom = 401.0
+text = "Confirm"
+
+[node name="StatusLabel" type="Label" parent="Panel" unique_id=469723647]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 264.0
+offset_right = 402.0
+offset_bottom = 318.0

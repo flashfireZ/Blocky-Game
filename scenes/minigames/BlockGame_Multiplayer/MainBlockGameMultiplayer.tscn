@@ -17,8 +17,13 @@
 script = ExtResource("1_tucik")
 
 [node name="BackgroundPrincipal" type="ColorRect" parent="." unique_id=446129661]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_right = 1080.0
 offset_bottom = 1920.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 color = Color(0.26691467, 0.48286825, 0.9991726, 1)
 
