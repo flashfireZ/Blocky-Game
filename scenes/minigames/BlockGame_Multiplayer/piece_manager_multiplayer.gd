@@ -63,18 +63,17 @@ func check_game_over():
 		await get_tree().create_timer(0.5).timeout
 		trigger_game_over(grid.score)
 
-func trigger_game_over(final_score):
-	# On cherche le menu
-	var ui = get_tree().root.find_child("GameOverUI", true, false)
-	
-	if ui:
-		# ON APPELLE UNE FONCTION DÉDIÉE DANS L'UI (voir étape 3)
-		if ui.has_method("setup_game_over"):
-			ui.setup_game_over(final_score)
-		else:
-			# Fallback si tu n'as pas encore mis à jour l'UI
-			ui.visible = true
-			var score_label = ui.find_child("FinalScoreLabel", true, false)
-			if score_label: score_label.text = "Score: " + str(final_score)
+func trigger_game_over(_final_score):
+	# Celui qui appelle cette fonction est celui qui ne peut plus jouer.
+	# Donc l'autre joueur gagne.
+	if FirebaseManager.opp_pid != "":
+		FirebaseManager.notify_game_over(FirebaseManager.opp_pid)
 	else:
-		print("ERREUR : GameOverUI non trouvé !")
+		# Fallback si solo ou erreur
+		_show_game_over_ui("ÉCHEC")
+
+func _show_game_over_ui(winner_name: String):
+	var ui = get_tree().root.find_child("GameOverUI", true, false)
+	if ui:
+		ui.setup(winner_name) # On imagine une fonction setup dans ton UI
+		ui.visible = true

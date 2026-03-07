@@ -1,16 +1,17 @@
 [gd_scene format=3 uid="uid://dltcyn2j6hkf1"]
 
-[ext_resource type="Script" uid="uid://bphlqgfh375l5" path="res://scripts/minigame_blocky/background_principal.gd" id="1_jlkjx"]
 [ext_resource type="Script" uid="uid://bxwpvutuj73x1" path="res://scenes/minigames/BlockGame_Multiplayer/main_block_game_multiplayer.gd" id="1_tucik"]
 [ext_resource type="Script" uid="uid://d1e5ocbio5b13" path="res://scenes/minigames/BlockGame_Multiplayer/grid_multiplayer.gd" id="2_asxbh"]
 [ext_resource type="Script" uid="uid://dgju3wrppvofj" path="res://scenes/minigames/BlockGame_Multiplayer/piece_manager_multiplayer.gd" id="3_o3l3v"]
 [ext_resource type="FontFile" uid="uid://bd7p25cgyjcdt" path="res://assets/fonts/LuckiestGuy-Regular.ttf" id="4_nky6x"]
 [ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/PieceM.tscn" id="5_3sh80"]
-[ext_resource type="Script" uid="uid://dugy6tp8n2yqf" path="res://scripts/minigame_blocky/game_over_ui.gd" id="5_23nm4"]
 [ext_resource type="Texture2D" uid="uid://1d7eexj3bkmg" path="res://icon.svg" id="6_3sh80"]
 [ext_resource type="PackedScene" uid="uid://cjglfnr2g545c" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_3M.tscn" id="6_6l4vd"]
 [ext_resource type="PackedScene" uid="uid://bg3j0h8tys20y" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_2M.tscn" id="7_1wyxg"]
+[ext_resource type="Script" uid="uid://3uvkf88ve23n" path="res://scripts/minigame_blocky/game_over_ui_Multiplayer.gd" id="9_3sh80"]
 [ext_resource type="Script" uid="uid://cqncrpopjqynw" path="res://scenes/minigames/BlockGame_Multiplayer/game_state_manager.gd" id="37_vjgw5"]
+
+[sub_resource type="Theme" id="Theme_3sh80"]
 
 [node name="MainBlockGame" type="Node2D" unique_id=1230392537]
 script = ExtResource("1_tucik")
@@ -20,17 +21,6 @@ offset_right = 1080.0
 offset_bottom = 1920.0
 mouse_filter = 2
 color = Color(0.26691467, 0.48286825, 0.9991726, 1)
-script = ExtResource("1_jlkjx")
-
-[node name="Button" type="Button" parent="BackgroundPrincipal" unique_id=316133208]
-layout_mode = 0
-offset_left = 27.0
-offset_top = 27.0
-offset_right = 186.0
-offset_bottom = 86.0
-theme_override_font_sizes/font_size = 50
-text = "Quitter
-"
 
 [node name="ComboLabel" type="Label" parent="BackgroundPrincipal" unique_id=1583906532]
 layout_mode = 1
@@ -46,22 +36,34 @@ offset_bottom = 397.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GridMultiplayer" type="Node2D" parent="." unique_id=1170787230]
-script = ExtResource("2_asxbh")
-
-[node name="PieceManagerMulti" type="Node2D" parent="." unique_id=283314732]
-z_index = 10
-position = Vector2(0, 1500)
-script = ExtResource("3_o3l3v")
-piece_templates = Array[PackedScene]([ExtResource("7_1wyxg"), ExtResource("6_6l4vd"), ExtResource("5_3sh80")])
-
-[node name="ScoreLabel" type="Label" parent="." unique_id=1413456945]
+[node name="ScoreLabel" type="Label" parent="BackgroundPrincipal" unique_id=1413456945]
+visible = false
+layout_mode = 0
 offset_left = 239.0
 offset_top = 66.0
 offset_right = 863.0
 offset_bottom = 189.0
 theme_override_fonts/font = ExtResource("4_nky6x")
 theme_override_font_sizes/font_size = 30
+
+[node name="QuitBtn" type="Button" parent="BackgroundPrincipal" unique_id=316133208]
+layout_mode = 0
+offset_left = 27.0
+offset_top = 27.0
+offset_right = 210.0
+offset_bottom = 104.0
+theme_override_font_sizes/font_size = 50
+text = "Quitter
+"
+
+[node name="GridMultiplayer" type="Node2D" parent="." unique_id=1170787230]
+script = ExtResource("2_asxbh")
+
+[node name="PieceManagerMulti" type="Node2D" parent="." unique_id=283314732]
+z_index = 10
+position = Vector2(0, 1700)
+script = ExtResource("3_o3l3v")
+piece_templates = Array[PackedScene]([ExtResource("7_1wyxg"), ExtResource("6_6l4vd"), ExtResource("5_3sh80")])
 
 [node name="ExplosionParticles" type="CPUParticles2D" parent="." unique_id=1271007531]
 emitting = false
@@ -76,7 +78,7 @@ initial_velocity_max = 196.52
 
 [node name="GameOverUI" type="CanvasLayer" parent="." unique_id=1708438157]
 visible = false
-script = ExtResource("5_23nm4")
+script = ExtResource("9_3sh80")
 
 [node name="Background" type="ColorRect" parent="GameOverUI" unique_id=652287438]
 anchors_preset = 8
@@ -196,13 +198,107 @@ offset_bottom = 23.0
 script = ExtResource("37_vjgw5")
 
 [node name="OpponentLabel" type="Label" parent="." unique_id=1758691373]
-offset_left = 544.0
-offset_top = 66.0
-offset_right = 904.0
-offset_bottom = 129.0
+offset_left = 649.0
+offset_top = 27.0
+offset_right = 1009.0
+offset_bottom = 90.0
 theme_override_font_sizes/font_size = 29
 text = "ID Opponent"
 
-[connection signal="pressed" from="BackgroundPrincipal/Button" to="BackgroundPrincipal" method="_on_button_pressed"]
+[node name="HPBarPlayer" type="ProgressBar" parent="." unique_id=1583177428]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 401.0
+offset_top = 1743.0
+offset_right = 675.0
+offset_bottom = 1819.0
+grow_horizontal = 2
+grow_vertical = 2
+show_percentage = false
+
+[node name="HealthLabelPlayer" type="Label" parent="HPBarPlayer" unique_id=901526337]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -137.0
+offset_top = -38.0
+offset_right = 137.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "Vie Joueur
+"
+horizontal_alignment = 1
+
+[node name="ShieldBarPlayer" type="ProgressBar" parent="." unique_id=673949337]
+offset_left = 375.0
+offset_top = 1668.0
+offset_right = 736.0
+offset_bottom = 1718.0
+show_percentage = false
+
+[node name="ShieldLabelPlayer" type="Label" parent="ShieldBarPlayer" unique_id=1267743901]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -136.0
+offset_top = -27.5
+offset_right = 136.0
+offset_bottom = 27.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "Bouclier Jouer"
+
+[node name="HPBarOpponent" type="ProgressBar" parent="." unique_id=2119154904]
+offset_left = 375.0
+offset_top = 90.0
+offset_right = 675.0
+offset_bottom = 140.0
+theme = SubResource("Theme_3sh80")
+show_percentage = false
+
+[node name="HealthLabelOpponent" type="Label" parent="HPBarOpponent" unique_id=1882378817]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -138.5
+offset_top = -56.5
+offset_right = 138.5
+offset_bottom = 56.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+text = "Vie Adversaire
+"
+
+[node name="ShieldBarOpponent" type="ProgressBar" parent="." unique_id=600573493]
+offset_left = 375.0
+offset_top = 154.0
+offset_right = 675.0
+offset_bottom = 194.0
+show_percentage = false
+
+[node name="ShieldLabelOpponent" type="Label" parent="ShieldBarOpponent" unique_id=549918143]
+layout_mode = 0
+offset_right = 159.0
+offset_bottom = 171.0
+theme_override_font_sizes/font_size = 40
+text = "Bouclier
+
+"
+
+[connection signal="pressed" from="BackgroundPrincipal/QuitBtn" to="." method="_on_quit_pressed"]
 [connection signal="pressed" from="GameOverUI/Background/RestartButton" to="GameOverUI" method="_on_restart_button_pressed"]
 [connection signal="pressed" from="GameOverUI/Background/QuitButton" to="GameOverUI" method="_on_quit_button_pressed"]

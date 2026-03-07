@@ -17,6 +17,7 @@ var opponent_hp    : int = 3000
 var opponent_shield: int = 0
 
 signal game_over(winner: String)
+signal stats_updated()
 
 # !! CORRECTION BUG CRITIQUE !!
 # On stocke l'origine GLOBALE de la grille (coin haut-gauche de la cellule 0,0).
@@ -144,7 +145,7 @@ func show_combo_label(total_multi: int):
 # ══════════════════════════════════════════════════════════════════════════════
 func center_and_generate_grid():
 	var total_grid_width = cell_dim * grid_cols
-	grid_start_pos = Vector2((1080 - total_grid_width) / 2.0, 300)
+	grid_start_pos = Vector2((1080 - total_grid_width) / 2.0, 250)
 
 	for y in range(grid_rows):
 		grid_positions.append([])
@@ -256,9 +257,10 @@ func hide_preview():
 # ══════════════════════════════════════════════════════════════════════════════
 #  LIGNES & COMBO
 # ══════════════════════════════════════════════════════════════════════════════
-func check_lines():
+func check_lines() -> int:
 	var lines_to_clear = []
-
+	# ... (Garde ta logique existante de détection des lignes pleines ici) ...
+	
 	for y in range(grid_rows):
 		var full = true
 		for x in range(grid_cols):
@@ -278,6 +280,7 @@ func check_lines():
 			lines_to_clear.append({"type": "col", "index": x})
 
 	var nb_lines = lines_to_clear.size()
+	var damage_dealt = 0 # On stocke les dégâts à envoyer
 
 	if nb_lines > 0:
 		var multi_simultane = nb_lines
@@ -285,9 +288,23 @@ func check_lines():
 		var total_multi     = multi_simultane + multi_serie
 
 		combo_streak += 1
-
 		var points = nb_lines * 100 * total_multi
 		update_score(points)
+
+		# --- NOUVELLE LOGIQUE DE DÉGÂTS ET SHIELD ---
+		for line in lines_to_clear:
+			if line.type == "row":
+				# Ligne horizontale = 8 cases (exemple : 2 points de shield par case x combo)
+				player_shield += 8 * 2 * total_multi
+				if player_shield > 1000: player_shield = 1000 # Cap maximum de bouclier
+			elif line.type == "col":
+				# Ligne verticale = 12 cases (exemple : 5 points de dégâts par case x combo)
+				damage_dealt += 12 * 5 * total_multi
+		
+		# On met à jour l'UI locale et on informe Firebase de nos propres stats
+		emit_signal("stats_updated")
+		var fm = get_tree().root.get_node_or_null("FirebaseManager")
+		if fm and fm.has_method("push_stats_only"): fm.push_stats_only()
 
 		if total_multi >= 2:
 			show_combo_label(total_multi)
@@ -298,6 +315,8 @@ func check_lines():
 
 	for line in lines_to_clear:
 		clear_line(line.type, line.index)
+
+	return damage_dealt # On retourne les dégâts pour que la pièce puisse les envoyer
 
 func clear_line(type, index):
 	var count = grid_cols if type == "row" else grid_rows
@@ -466,41 +485,52 @@ func deal_damage(amount: int):
 func serialize_player_state() -> Dictionary:
 	return {"hp": player_hp, "shield": player_shield}
 
-func sync_opponent_stats(hp: int, shield: int):
-	opponent_hp     = hp
-	opponent_shield = shield
 
-func place_piece(coords: Array, color: Color, is_attack: bool, dmg_multi: float, _is_local: bool):
+func place_piece(coords: Array, color: Color, is_attack: bool, dmg_multi: float, _is_local: bool, damage_amount: int = 0):
 	for c in coords:
-		var cx = int(c.x)
-		var cy = int(c.y)
-		if cx < 0 or cx >= grid_cols or cy < 0 or cy >= grid_rows:
-			continue
+		var cx = int(c.x); var cy = int(c.y)
+		if cx < 0 or cx >= grid_cols or cy < 0 or cy >= grid_rows: continue
 		grid_data[cy][cx] = 2
 		var cell = get_node_or_null("Cell_" + str(cx) + "_" + str(cy))
 		if cell:
-			# !! CORRECTION : On instancie BlockMultiplayer.tscn pour avoir le shader,
-			# au lieu d'un ColorRect.new() brut qui affiche une couleur plate sans texture.
 			var block: Node2D
-			if block_scene:
-				block = block_scene.instantiate()
-				if block.has_method("set_color"):
-					block.set_color(color)
-			else:
-				# fallback si block_scene non assigné dans l'inspecteur
-				var cr = ColorRect.new()
-				cr.size  = Vector2(cell_dim, cell_dim)
-				cr.color = color
-				block    = cr
+			if block_scene: block = block_scene.instantiate()
+			if block.has_method("set_color"): block.set_color(color)
 			block.z_index = 10
-			# Le fond de la cellule reste visible intentionnellement
 			cell.add_child(block)
+			
 	check_lines()
-	if is_attack:
-		var dmg = int(50 * dmg_multi)
-		player_hp -= dmg
-		print("Dégâts reçus : ", dmg, " | HP restants : ", player_hp)
+	
+	if is_attack and not _is_local:
+		var final_dmg = int(damage_amount * dmg_multi)
+		
+		# Le shield prend les dégâts en premier
+		if player_shield > 0:
+			if final_dmg >= player_shield:
+				final_dmg -= player_shield
+				player_shield = 0
+			else:
+				player_shield -= final_dmg
+				final_dmg = 0
+		
+		# Le reste touche les HP
+		player_hp -= final_dmg
+		if player_hp < 0: player_hp = 0
+		
+		print("Dégâts reçus ! HP restants : ", player_hp, " | Shield : ", player_shield)
+		emit_signal("stats_updated")
+		
+		# On informe Firebase qu'on a pris des dégâts
+		var fm = get_tree().root.get_node_or_null("FirebaseManager")
+		if fm and fm.has_method("push_stats_only"): fm.push_stats_only()
+
 		if player_hp <= 0:
 			emit_signal("game_over", "opponent")
+
+# On s'assure que Firebase met à jour l'UI quand l'adversaire gagne/perd du shield
+func sync_opponent_stats(hp: int, shield: int):
+	opponent_hp     = hp
+	opponent_shield = shield
+	emit_signal("stats_updated")
 
 # ══════════════════════════════════════════════════════════════════════════════

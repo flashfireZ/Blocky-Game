@@ -212,7 +212,10 @@ func check_placement():
 
 func finalize_move(grid, block_count: int, placement_data: Array = []):
 	if grid.has_method("update_score"): grid.update_score(block_count * 10)
-	if grid.has_method("check_lines"):  grid.check_lines()
+	
+	var damage = 0
+	if grid.has_method("check_lines"):  
+		damage = grid.check_lines() # On récupère les dégâts calculés
 
 	var coords_list: Array = []
 	for item in placement_data:
@@ -220,7 +223,8 @@ func finalize_move(grid, block_count: int, placement_data: Array = []):
 
 	var fm = get_tree().root.get_node_or_null("FirebaseManager")
 	if fm and fm.has_method("push_move"):
-		fm.push_move(coords_list, piece_color, false)
+		var is_attack = damage > 0
+		fm.push_move(coords_list, piece_color, is_attack, damage) # Ajout du paramètre
 
 	var manager = get_parent()
 	if manager and manager.has_method("check_game_over"):

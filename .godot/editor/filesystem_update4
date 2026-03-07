@@ -1,6 +1,11 @@
+res://scripts/minigame_blocky/game_over_ui.gd
 res://scenes/minigames/BlockGame_Multiplayer/MainBlockGameMultiplayer.tscn
 res://scenes/minigames/BlockGame/Cell.gdshader
 res://scenes/minigames/BlockGame_Multiplayer/BlockMultiplayer.gdshader
 res://scenes/minigames/BlockGame/Block.gdshader
-res://scenes/minigames/BlockGame_Multiplayer/grid_multiplayer.gd
-res://scenes/minigames/BlockGame_Multiplayer/piece_multiplayer.gd
+res://scenes/minigames/BlockGame_Multiplayer/firebase_manager.gd
+res://scenes/minigames/BlockGame_Multiplayer/main_block_game_multiplayer.gd
+res://scenes/minigames/BlockGame_Multiplayer/piece_manager_multiplayer.gd
+res://scenes/minigames/BlockGame_Multiplayer/lobby.gd
+res://scenes/minigames/BlockGame_Multiplayer/game_state_manager.gd
+res://scripts/minigame_blocky/background_principal.gd
