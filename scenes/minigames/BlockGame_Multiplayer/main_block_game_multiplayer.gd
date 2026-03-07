@@ -1,17 +1,17 @@
 extends Node2D
 
-@onready var lbl_opponent = $OpponentLabel
+@onready var lbl_opponent = $HUD/TopBar/HBox/OpponentStats/OpponentLabel
 @onready var grid = $GridMultiplayer
 
 # --- Références aux barres et labels ---
-@onready var hp_bar_player = $HPBarPlayer
+@onready var hp_bar_player = $HUD/BottomBar/PlayerStats/HPBarPlayer
 @onready var hp_label_player = hp_bar_player.get_node("HealthLabelPlayer")
-@onready var shield_bar_player = $ShieldBarPlayer
+@onready var shield_bar_player = $HUD/BottomBar/PlayerStats/ShieldBarPlayer
 @onready var shield_label_player = shield_bar_player.get_node("ShieldLabelPlayer")
 
-@onready var hp_bar_opp = $HPBarOpponent
+@onready var hp_bar_opp = $HUD/TopBar/HBox/OpponentStats/HPBarOpponent
 @onready var hp_label_opp = hp_bar_opp.get_node("HealthLabelOpponent")
-@onready var shield_bar_opp = $ShieldBarOpponent
+@onready var shield_bar_opp = $HUD/TopBar/HBox/OpponentStats/ShieldBarOpponent
 @onready var shield_label_opp = shield_bar_opp.get_node("ShieldLabelOpponent")
 
 # --- Mémoire des valeurs pour les animations ---
@@ -48,7 +48,7 @@ func _ready():
 		)
 
 	# ── Bouton Quitter (nœud optionnel dans la scène) ─────────────────────────
-	var btn_quit = get_node_or_null("QuitBtn")
+	var btn_quit = get_node_or_null("HUD/TopBar/HBox/QuitBtn")
 	if btn_quit and not btn_quit.pressed.is_connected(_on_quit_pressed):
 		btn_quit.pressed.connect(_on_quit_pressed)
 

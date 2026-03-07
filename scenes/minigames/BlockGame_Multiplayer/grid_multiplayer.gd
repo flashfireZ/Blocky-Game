@@ -145,7 +145,7 @@ func show_combo_label(total_multi: int):
 # ══════════════════════════════════════════════════════════════════════════════
 func center_and_generate_grid():
 	var total_grid_width = cell_dim * grid_cols
-	grid_start_pos = Vector2((1080 - total_grid_width) / 2.0, 250)
+	grid_start_pos = Vector2((1080 - total_grid_width) / 2.0, 150)
 
 	for y in range(grid_rows):
 		grid_positions.append([])

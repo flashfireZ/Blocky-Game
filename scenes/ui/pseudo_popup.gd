@@ -1,13 +1,3 @@
-# pseudo_popup.gd
-# À attacher sur un nœud CanvasLayer ou Control nommé "PseudoPopup"
-# Structure de scène attendue :
-#   PseudoPopup (Control)
-#     └─ Panel
-#          ├─ TitleLabel
-#          ├─ PseudoInput   (LineEdit)
-#          ├─ ConfirmBtn    (Button)
-#          ├─ StatusLabel   (Label)
-#          └─ LoadingSpinner (optionnel, AnimatedSprite2D ou simple Label)
 extends Control
 
 signal pseudo_confirmed(pseudo: String)
@@ -15,85 +5,101 @@ signal pseudo_confirmed(pseudo: String)
 const MIN_LEN : int = 3
 const MAX_LEN : int = 16
 
-@onready var input         : LineEdit = $Panel/PseudoInput
-@onready var confirm_btn   : Button   = $Panel/ConfirmBtn
-@onready var status_lbl    : Label    = $Panel/StatusLabel
+# Couleurs Palette
+const COL_SUCCESS = Color(0.0, 1.0, 0.5)
+const COL_ERROR   = Color(1.0, 0.3, 0.3)
+const COL_NEUTRAL = Color(0.42, 0.42, 0.6)
+
+@onready var main_panel  : PanelContainer = $Center/MainPanel
+@onready var input       : LineEdit       = $Center/MainPanel/Margin/VBox/PseudoInput
+@onready var confirm_btn : Button         = $Center/MainPanel/Margin/VBox/ConfirmBtn
+@onready var status_lbl  : Label          = $Center/MainPanel/Margin/VBox/StatusLabel
 
 var _player_id : String = ""
 var _checking  : bool   = false
 
-# ══════════════════════════════════════════════════════════════════════════════
 func _ready():
 	confirm_btn.pressed.connect(_on_confirm_pressed)
 	input.text_submitted.connect(func(_t): _on_confirm_pressed())
+	
+	# Initialisation visuelle
+	status_lbl.text = ""
+	_animate_entrance()
 	input.grab_focus()
 
 func setup(player_id: String):
 	_player_id = player_id
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  VALIDATION LOCALE
-# ══════════════════════════════════════════════════════════════════════════════
+# ── Animations ──────────────────────────────────────────────────────────────
+
+func _animate_entrance():
+	main_panel.scale = Vector2.ZERO
+	main_panel.pivot_offset = main_panel.custom_minimum_size / 2
+	var t = create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	t.tween_property(main_panel, "scale", Vector2.ONE, 0.5)
+
+func _shake_ui():
+	var t = create_tween().set_loops(4)
+	var original_pos = main_panel.position
+	t.tween_property(main_panel, "position:x", original_pos.x + 10, 0.05)
+	t.tween_property(main_panel, "position:x", original_pos.x - 10, 0.05)
+	t.chain().tween_property(main_panel, "position:x", original_pos.x, 0.05)
+
+# ── Logique Métier (Inchangée mais visuellement liée) ───────────────────────
+
 func _on_confirm_pressed():
 	if _checking: return
 
-	var raw    : String = input.text.strip_edges()
-	var pseudo : String = raw
+	var pseudo : String = input.text.strip_edges()
 
-	# Contraintes
 	if pseudo.length() < MIN_LEN:
-		_set_status("Au moins %d caractères." % MIN_LEN, false)
+		_set_status("C'est trop court ! (min %d)" % MIN_LEN, false)
+		_shake_ui()
 		return
 	if pseudo.length() > MAX_LEN:
-		_set_status("Maximum %d caractères." % MAX_LEN, false)
+		_set_status("C'est trop long ! (max %d)" % MAX_LEN, false)
+		_shake_ui()
 		return
-	if not pseudo.is_valid_identifier() and not _is_valid_pseudo(pseudo):
+	
+	if not _is_valid_pseudo(pseudo):
 		_set_status("Lettres, chiffres et _ uniquement.", false)
+		_shake_ui()
 		return
 
 	_start_check(pseudo)
 
 func _is_valid_pseudo(s: String) -> bool:
-	for c in s:
-		if not (c.is_valid_identifier() or c == "_"):
-			return false
-	return true
+	var regex = RegEx.new()
+	regex.compile("^[a-zA-Z0-9_]+$")
+	return regex.search(s) != null
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  VÉRIFICATION FIREBASE
-# ══════════════════════════════════════════════════════════════════════════════
 func _start_check(pseudo: String):
 	_checking = true
-	_set_status("Vérification...", true)
+	_set_status("Vérification en cours...", true, true)
 	confirm_btn.disabled = true
 
-	var key : String = pseudo.to_lower()   # insensible à la casse
+	var key : String = pseudo.to_lower()
 
 	FirebaseManager.fb_get("/pseudos/%s.json" % key, func(data):
 		if data == null or (typeof(data) == TYPE_BOOL and data == false):
-			# Pseudo libre → tenter le claim
 			_claim_pseudo(pseudo, key)
 			return
 
 		if typeof(data) == TYPE_DICTIONARY:
 			var owner_id : String = data.get("id", "")
-
 			if owner_id == _player_id:
-				# C'est notre pseudo sur un autre appareil → OK directement
 				_confirm_success(pseudo)
 				return
 
-			# Pseudo pris par quelqu'un d'autre
-			_set_status("Pseudo déjà pris, choisis-en un autre.", false)
+			_set_status("Désolé, ce pseudo est déjà pris !", false)
+			_shake_ui()
 			_reset_ui()
 			return
 
-		_set_status("Erreur réseau, réessaie.", false)
+		_set_status("Erreur de connexion...", false)
 		_reset_ui()
 	)
 
-# ── Pattern claim anti race-condition ────────────────────────────────────────
-# Même logique que le matchmaking : écrire, attendre, relire.
 func _claim_pseudo(pseudo: String, key: String):
 	var payload = JSON.stringify({"id": _player_id, "pseudo": pseudo})
 	FirebaseManager.fb_patch("/pseudos/%s.json" % key, payload)
@@ -101,53 +107,45 @@ func _claim_pseudo(pseudo: String, key: String):
 	await get_tree().create_timer(0.4).timeout
 
 	FirebaseManager.fb_get("/pseudos/%s.json" % key, func(data):
-		if typeof(data) != TYPE_DICTIONARY:
-			_set_status("Erreur réseau, réessaie.", false)
+		if typeof(data) == TYPE_DICTIONARY and data.get("id", "") == _player_id:
+			_confirm_success(pseudo)
+		else:
+			_set_status("Zut ! Quelqu'un l'a pris juste avant.", false)
+			_shake_ui()
 			_reset_ui()
-			return
-
-		if data.get("id", "") != _player_id:
-			# Quelqu'un d'autre a claimé pendant les 400ms
-			_set_status("Pseudo déjà pris, choisis-en un autre.", false)
-			_reset_ui()
-			return
-
-		# Claim confirmé
-		_confirm_success(pseudo)
 	)
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  SUCCÈS
-# ══════════════════════════════════════════════════════════════════════════════
 func _confirm_success(pseudo: String):
-	# 1. Sauvegarder localement
+	# Sauvegarde locale
 	var config = ConfigFile.new()
 	config.load("user://player.cfg")
 	config.set_value("player", "pseudo", pseudo)
 	config.save("user://player.cfg")
 
-	# 2. Créer/mettre à jour l'entrée leaderboard
-	var lb_payload = JSON.stringify({
-		"pseudo":   pseudo,
-		"trophies": 0        # sera ignoré si l'entrée existe déjà (PATCH = merge)
-	})
+	# Update Leaderboard
+	var lb_payload = JSON.stringify({"pseudo": pseudo, "trophies": 0})
 	FirebaseManager.fb_patch("/leaderboard/%s.json" % _player_id, lb_payload)
 
-	print("[Pseudo] Enregistré : ", pseudo)
-	_set_status("Bienvenue, %s !" % pseudo, true)
-
-	await get_tree().create_timer(0.6).timeout
+	_set_status("Parfait, bienvenue " + pseudo + " !", true)
+	
+	# Animation de sortie
+	var t = create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_BACK)
+	t.tween_property(main_panel, "scale", Vector2.ZERO, 0.4).set_delay(0.5)
+	await t.finished
+	
 	pseudo_confirmed.emit(pseudo)
 	queue_free()
 
-# ══════════════════════════════════════════════════════════════════════════════
-#  UI HELPERS
-# ══════════════════════════════════════════════════════════════════════════════
-func _set_status(msg: String, ok: bool):
+func _set_status(msg: String, ok: bool, pulse: bool = false):
 	status_lbl.text = msg
-	status_lbl.modulate = Color.GREEN if ok else Color.RED
+	status_lbl.modulate = COL_SUCCESS if ok else COL_ERROR
+	
+	if pulse:
+		var t = create_tween().set_loops()
+		t.tween_property(status_lbl, "modulate:a", 0.4, 0.5)
+		t.tween_property(status_lbl, "modulate:a", 1.0, 0.5)
 
 func _reset_ui():
-	_checking            = false
+	_checking = false
 	confirm_btn.disabled = false
 	input.grab_focus()

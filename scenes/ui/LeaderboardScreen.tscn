@@ -1,8 +1,54 @@
 [gd_scene format=3 uid="uid://bsdj7fwa43wsi"]
 
 [ext_resource type="Script" uid="uid://yeyd68jr5wpa" path="res://scenes/ui/leaderboard_screen.gd" id="1_rwwky"]
+[ext_resource type="FontFile" uid="uid://bd7p25cgyjcdt" path="res://assets/fonts/LuckiestGuy-Regular.ttf" id="2_font"]
 
-[node name="LeaderboardScreen" type="Control" unique_id=1903717513]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_normal"]
+bg_color = Color(0.15, 0.1, 0.3, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.49, 0.3, 1, 0.7)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_pressed"]
+bg_color = Color(0.1, 0.06, 0.22, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_back_hover"]
+bg_color = Color(0.22, 0.15, 0.42, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.6, 0.4, 1, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_myrank"]
+bg_color = Color(0.09, 0.06, 0.22, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.84, 0, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(1, 0.84, 0, 0.3)
+shadow_size = 16
+
+[node name="LeaderboardScreen" type="Control" unique_id=758596286]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,82 +57,217 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rwwky")
 
-[node name="BG" type="ColorRect" parent="." unique_id=2034053266]
+[node name="BG" type="ColorRect" parent="." unique_id=709421391]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 0.19607843, 1, 1)
+color = Color(0.04, 0.04, 0.1, 1)
 
-[node name="GlowTop" type="ColorRect" parent="." unique_id=1457907034]
+[node name="GlowTop" type="ColorRect" parent="." unique_id=1122919822]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
+offset_bottom = 320.0
 grow_horizontal = 2
+color = Color(0.36, 0.17, 0.88, 0.28)
 
-[node name="Header" type="HBoxContainer" parent="." unique_id=1740559319]
+[node name="GlowBottom" type="ColorRect" parent="." unique_id=247407217]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -200.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(1, 0.7, 0, 0.08)
+
+[node name="TopAccentLine" type="ColorRect" parent="." unique_id=1448967741]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 145.0
-offset_bottom = 313.0
+offset_bottom = 3.0
 grow_horizontal = 2
+color = Color(0.49, 0.3, 1, 0.9)
 
-[node name="BackBtn" type="Button" parent="Header" unique_id=1624951656]
+[node name="BottomAccentLine" type="ColorRect" parent="." unique_id=592347652]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(1, 0.84, 0, 0.7)
+
+[node name="MainMargin" type="MarginContainer" parent="." unique_id=32090210]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 24
+
+[node name="MainVBox" type="VBoxContainer" parent="MainMargin" unique_id=198305167]
 layout_mode = 2
-text = "<-"
+theme_override_constants/separation = 14
 
-[node name="TitleLabel" type="Label" parent="Header" unique_id=863058436]
+[node name="Header" type="HBoxContainer" parent="MainMargin/MainVBox" unique_id=1721661626]
 layout_mode = 2
-text = "CLASSEMENT"
+theme_override_constants/separation = 12
 
-[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=161815628]
-layout_mode = 0
-offset_left = 6.0
-offset_top = 313.0
-offset_right = 1080.0
-offset_bottom = 557.0
-
-[node name="EntriesList" type="VBoxContainer" parent="ScrollContainer" unique_id=1450112910]
+[node name="BackBtn" type="Button" parent="MainMargin/MainVBox/Header" unique_id=533903676]
+custom_minimum_size = Vector2(90, 58)
 layout_mode = 2
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.75, 0.6, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_back_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_back_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_back_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_back_normal")
+text = "← BACK"
 
-[node name="Divider" type="ColorRect" parent="." unique_id=2095538590]
-layout_mode = 0
-offset_left = 1.0
-offset_top = 557.0
-offset_right = 1081.0
-offset_bottom = 870.0
-
-[node name="MyRankRow" type="PanelContainer" parent="." unique_id=1371345778]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="MyRankHBox" type="HBoxContainer" parent="MyRankRow" unique_id=1141059456]
+[node name="TitleLabel" type="Label" parent="MainMargin/MainVBox/Header" unique_id=222707780]
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.36, 0.17, 0.88, 0.6)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 38
+text = "CLASSEMENT 🏆"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="MyRankLbl" type="Label" parent="MyRankRow/MyRankHBox" unique_id=755913653]
+[node name="PodiumSection" type="HBoxContainer" parent="MainMargin/MainVBox" unique_id=1359353514]
+custom_minimum_size = Vector2(0, 260)
 layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
 
-[node name="MyNameLbl" type="Label" parent="MyRankRow/MyRankHBox" unique_id=597242429]
+[node name="PodiumDivider" type="ColorRect" parent="MainMargin/MainVBox" unique_id=1442303301]
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
+color = Color(0.17, 0.17, 0.3, 1)
 
-[node name="MyTrophyLbl" type="Label" parent="MyRankRow/MyRankHBox" unique_id=1441174492]
+[node name="RankHeaderRow" type="HBoxContainer" parent="MainMargin/MainVBox" unique_id=1725683000]
 layout_mode = 2
+theme_override_constants/separation = 0
 
-[node name="LoadingLabel" type="Label" parent="." unique_id=444125671]
+[node name="RankHeaderLbl" type="Label" parent="MainMargin/MainVBox/RankHeaderRow" unique_id=2120369033]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.42, 0.6, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "RANG"
+horizontal_alignment = 1
+
+[node name="RankHeaderNameLbl" type="Label" parent="MainMargin/MainVBox/RankHeaderRow" unique_id=301078734]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.42, 0.42, 0.6, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "JOUEUR"
+
+[node name="RankHeaderTrophyLbl" type="Label" parent="MainMargin/MainVBox/RankHeaderRow" unique_id=1942440452]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.42, 0.42, 0.6, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "TROPHÉES"
+horizontal_alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainMargin/MainVBox" unique_id=281776037]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="EntriesList" type="VBoxContainer" parent="MainMargin/MainVBox/ScrollContainer" unique_id=2062992875]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="Divider" type="ColorRect" parent="MainMargin/MainVBox" unique_id=1112802209]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(1, 0.84, 0, 0.5)
+
+[node name="MyRankRow" type="PanelContainer" parent="MainMargin/MainVBox" unique_id=1246307915]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_myrank")
+
+[node name="MyRankHBox" type="HBoxContainer" parent="MainMargin/MainVBox/MyRankRow" unique_id=1341554432]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="YouBadge" type="Label" parent="MainMargin/MainVBox/MyRankRow/MyRankHBox" unique_id=1110137516]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0.04, 0.04, 0.1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "VOUS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MyRankLbl" type="Label" parent="MainMargin/MainVBox/MyRankRow/MyRankHBox" unique_id=1462472639]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.49, 0.3, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "#-"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MyNameLbl" type="Label" parent="MainMargin/MainVBox/MyRankRow/MyRankHBox" unique_id=1557343563]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "Joueur"
+vertical_alignment = 1
+
+[node name="MyTrophyLbl" type="Label" parent="MainMargin/MainVBox/MyRankRow/MyRankHBox" unique_id=764318903]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+text = "🏆 0"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="LoadingLabel" type="Label" parent="." unique_id=1047070526]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -11.5
-offset_right = 20.0
-offset_bottom = 11.5
+offset_left = -150.0
+offset_top = -30.0
+offset_right = 150.0
+offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 37
+theme_override_colors/font_color = Color(0.49, 0.3, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "Chargement..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="MainMargin/MainVBox/Header/BackBtn" to="." method="_on_back_btn_pressed"]
