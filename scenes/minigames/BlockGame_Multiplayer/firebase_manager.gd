@@ -17,7 +17,7 @@ var _poll_timer     : float = 0.0
 const POLL_INTERVAL : float = 1.2
 
 # ─── Gestion du temps & inactivité ───────────────────────────────────────────
-const INACTIVITY_TIMEOUT : float = 40.0   # ← 40s sans jouer = forfait
+const INACTIVITY_TIMEOUT : float = 130.0   # ← 40s sans jouer = forfait
 const GRACE_PERIOD       : float = 5.0    # ← délai avant d'activer les timers
 
 var _last_move_ts         : float = 0.0   # Dernier timestamp de mouvement adversaire (Firebase)
@@ -122,7 +122,7 @@ func _process_opponent_state(data: Dictionary):
 			_apply_opponent_move(move)
 
 	if _grid and _grid.has_method("sync_opponent_stats"):
-		_grid.sync_opponent_stats(int(data.get("hp", 3000)), int(data.get("shield", 0)))
+		_grid.sync_opponent_stats(int(data.get("hp", 1500)), int(data.get("shield", 0)))
 
 func _apply_opponent_move(move: Dictionary):
 	if not _grid: return
@@ -155,10 +155,15 @@ func declare_winner_and_finish(winner_pid: String):
 	if _game_over_sent: return
 	_game_over_sent = true
 	_is_connected   = false
-	notify_game_over(winner_pid)         # ← Écriture Firebase (async)
-	game_finished.emit(winner_pid)       # ← Signal local immédiat
+	
+	# 1. Mise à jour des trophées localement (AVANT de quitter)
+	_update_local_trophies(winner_pid)
+	
+	# 2. Notification Firebase et Signal local
+	notify_game_over(winner_pid)
+	game_finished.emit(winner_pid)
+	
 	print("[Firebase] Fin de partie — vainqueur : ", winner_pid)
-
 ## Appelé quand le joueur local appuie sur Quitter ou ferme l'app.
 func notify_player_quit():
 	print("[Firebase] Joueur local a quitté — défaite par abandon")
@@ -188,6 +193,30 @@ func _handle_local_abandoned():
 func notify_game_over(winner_id: String):
 	var data = {"status": "finished", "winner": winner_id}
 	fb_patch("/games/%s.json" % game_id, JSON.stringify(data))
+
+func _update_local_trophies(winner_pid: String):
+	var is_winner = (winner_pid == my_pid) # 'my_pid' est ton ID local
+	var change = 20 if is_winner else -10   # Gain ou perte
+	
+	var config = ConfigFile.new()
+	var path = "user://player.cfg"
+	
+	# --- LOGIQUE DE DEBUG (IMPORTANT pour tes 2 instances) ---
+	if OS.has_feature("debug"):
+		path = "user://player_debug_%d.cfg" % OS.get_process_id()
+	
+	# Chargement et modification
+	var err = config.load(path)
+	if err == OK:
+		var current_trophies = config.get_value("player", "trophies", 0)
+		var new_total = max(0, current_trophies + change) # Empêche d'avoir des trophées négatifs
+		
+		config.set_value("player", "trophies", new_total)
+		config.save(path)
+		print("[Trophies] Sauvegarde locale : %d (%+d)" % [new_total, change])
+	else:
+		print("[ERREUR] Impossible de charger le fichier de sauvegarde : ", path)
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  ÉCRITURE (PUSH)

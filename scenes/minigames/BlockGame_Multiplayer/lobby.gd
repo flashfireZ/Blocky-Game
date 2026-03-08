@@ -24,6 +24,8 @@ var _poll_timer    : float  = 0.0
 var _queue_timer   : float  = 0.0
 var _match_started : bool   = false
 var _tween_pulse   : Tween  = null
+var _current_displayed_trophies : int = 0
+var _debug_save_path : String = "user://player.cfg"
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  INITIALISATION
@@ -31,46 +33,101 @@ var _tween_pulse   : Tween  = null
 
 func _ready():
 	randomize()
-	_player_id = _generate_id()
 	
-	# Debug : ID unique pour tester plusieurs instances sur le même PC
+	# --- LOGIQUE DE PERSISTANCE DEBUG ---
 	if OS.has_feature("debug"):
-		_player_id += "_" + str(randi() % 999).pad_zeros(3)
+		# On crée un chemin de sauvegarde unique pour cette fenêtre (ex: player_1234.cfg)
+		# Le PID ne change pas tant que tu ne fermes pas l'instance.
+		var pid = OS.get_process_id()
+		_debug_save_path = "user://player_debug_%d.cfg" % pid
+		
+		# On génère un ID unique basé sur le PID pour que l'ID reste le même
+		# quand on revient du match au lobby.
+		_player_id = "dbg_%d" % pid
+	else:
+		# En version réelle, on génère/charge l'ID normalement
+		_player_id = _generate_id()
+	# ------------------------------------
 
-	_update_player_stats() # Charge le pseudo et les trophées
-	_animate_logo()        # Lance l'animation flottante
-	_set_ui_idle()         # État initial des boutons
+	_update_player_stats() 
+	_animate_logo()        
+	_set_ui_idle()         
 
-	# Connexion des signaux
 	btn_battle.pressed.connect(_on_battle_btn_pressed)
 	btn_cancel.pressed.connect(_on_cancel_btn_pressed)
 
 func _update_player_stats():
 	var config = ConfigFile.new()
+	# On charge le fichier spécifique à cette instance
+	var err = config.load(_debug_save_path)
+	
 	var pseudo = "JOUEUR"
 	var trophies = 0
 	
-	if config.load("user://player.cfg") == OK:
+	if err == OK:
 		pseudo = config.get_value("player", "pseudo", "JOUEUR")
 		trophies = config.get_value("player", "trophies", 0)
+	else:
+		# Si le fichier n'existe pas (premier lancement de cette instance)
+		# On initialise des trophées différents pour tester si on veut
+		pseudo = "JOUEUR_" + str(OS.get_process_id()).right(3)
+		trophies = 500 # Score de départ pour test
+		
+		config.set_value("player", "pseudo", pseudo)
+		config.set_value("player", "trophies", trophies)
+		config.set_value("player", "id", _player_id)
+		config.save(_debug_save_path)
 	
-	lbl_pseudo.text = pseudo
-	lbl_id.text = "ID: #" + _player_id.left(6).to_upper()
-	lbl_trophies.text = "🏆 " + str(trophies)
+	lbl_pseudo.text = pseudo.to_upper()
+	lbl_id.text = "ID: #" + _player_id.to_upper()
+	
+	# On anime les trophées (le compteur ne repartira plus de 0 car 
+	# _current_displayed_trophies sera mis à jour correctement)
+	_animate_trophy_counter(trophies)
 
+func _animate_trophy_counter(target_value: int):
+	# On s'assure que l'animation de scale part bien du centre du label
+	lbl_trophies.pivot_offset = lbl_trophies.size / 2
+	
+	# 1. Animation des chiffres (le compteur qui défile)
+	# CORRECTION : set_trans utilise TRANS_QUINT et set_ease utilise EASE_OUT
+	var tween = create_tween().set_trans(Tween.TRANS_QUINT).set_ease(Tween.EASE_OUT)
+	
+	tween.tween_method(func(val: int): 
+		lbl_trophies.text = "🏆 " + str(val)
+	, _current_displayed_trophies, target_value, 2.0) 
+	
+	# 2. Animation de "Pulse" (le texte grossit et rétrécit)
+	# CORRECTION : set_trans utilise TRANS_ELASTIC et set_ease utilise EASE_OUT
+	var pulse = create_tween().set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	pulse.tween_property(lbl_trophies, "scale", Vector2(1.2, 1.2), 0.2)
+	pulse.tween_property(lbl_trophies, "scale", Vector2(1.0, 1.0), 0.4)
+	
+	# Mise à jour de la variable de suivi
+	_current_displayed_trophies = target_value
 # ══════════════════════════════════════════════════════════════════════════════
 #  ANIMATIONS VISUELLES
 # ══════════════════════════════════════════════════════════════════════════════
 
 func _animate_logo():
-	# Animation de flottement + rotation douce pour le titre
-	var t = create_tween().set_loops().set_parallel(true).set_trans(Tween.TRANS_SINE)
-	t.tween_property(logo, "position:y", logo.position.y - 20, 2.2).as_relative()
-	t.tween_property(logo, "rotation_degrees", 2.0, 2.2)
+	if not logo: return
 	
-	t.chain().set_parallel(true)
-	t.tween_property(logo, "position:y", logo.position.y + 20, 2.2).as_relative()
-	t.tween_property(logo, "rotation_degrees", -2.0, 2.2)
+	# On attend une frame pour être sûr que le Container a bien positionné le logo au centre
+	await get_tree().process_frame
+	
+	# On mémorise la position centrale de départ exacte
+	var center_y = logo.position.y
+	
+	# On crée un tween qui boucle à l'infini
+	var t = create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	
+	# PHASE 1 : Monte à (Centre - 20)
+	t.tween_property(logo, "position:y", center_y - 20, 2.0)
+	t.parallel().tween_property(logo, "rotation_degrees", 2.0, 2.0)
+	
+	# PHASE 2 : Descend à (Centre + 20)
+	t.tween_property(logo, "position:y", center_y + 20, 2.0)
+	t.parallel().tween_property(logo, "rotation_degrees", -2.0, 2.0)
 
 func _start_pulse():
 	_stop_pulse()
@@ -112,6 +169,9 @@ func _join_queue():
 	_poll_timer = 0.0
 	_set_ui_searching()
 
+	# ---> AJOUT : On supprime les vieux résidus éventuels avant de chercher
+	FirebaseManager.fb_delete("/player_matches/%s.json" % _player_id)
+
 	var payload = JSON.stringify({"ts": Time.get_unix_time_from_system()})
 	FirebaseManager.fb_patch("/matchmaking/queue/%s.json" % _player_id, payload)
 
@@ -144,6 +204,9 @@ func _poll():
 	FirebaseManager.fb_get("/player_matches/%s.json" % _player_id, func(data):
 		if _match_started or not _in_queue: return
 		if typeof(data) == TYPE_DICTIONARY and data.has("gid"):
+			# ---> AJOUT : Supprimer la notification Firebase après l'avoir lue
+			FirebaseManager.fb_delete("/player_matches/%s.json" % _player_id)
+			
 			_launch(data["gid"], true, data["opp"])
 			return
 
@@ -261,3 +324,6 @@ func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		if _in_queue:
 			FirebaseManager.fb_delete("/matchmaking/queue/%s.json" % _player_id)
+		
+		# ---> AJOUT : On nettoie d'éventuels matchs non consommés à la fermeture
+		FirebaseManager.fb_delete("/player_matches/%s.json" % _player_id)

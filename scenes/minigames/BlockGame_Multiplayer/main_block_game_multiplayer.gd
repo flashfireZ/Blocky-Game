@@ -73,35 +73,57 @@ func _on_game_finished(winner_id: String):
 
 	print("[Game] Partie terminée — vainqueur : ", winner_id)
 
-	# 1. Arrêter tous les systèmes actifs
+	# 1. Arrêter les systèmes
 	if grid:
 		grid.set_process(false)
 		grid.set_physics_process(false)
-
+	
 	var piece_mgr = get_node_or_null("PieceManagerMultiplayer")
 	if piece_mgr:
 		piece_mgr.set_process(false)
 		piece_mgr.set_physics_process(false)
 
-	# Stopper le timer (évite que _end_game_by_timer() se redéclenche)
 	var gsm = get_node_or_null("GameStateManager")
 	if gsm and gsm.has_method("stop_timer"):
 		gsm.stop_timer()
+
+	# 2. Calcul du gain/perte
+	var is_winner = (winner_id == FirebaseManager.my_pid)
+	var delta = 2 if is_winner else -1
 	
-	var delta = 2 if winner_id == FirebaseManager.my_pid else -1
-	var pseudo = "Joueur"  # remplace par ton système de pseudo
+	# Mise à jour Firebase (on récupère le pseudo depuis le config file local)
+	var config = ConfigFile.new()
+	var pseudo = "Joueur"
+	if config.load("user://player.cfg") == OK:
+		pseudo = config.get_value("player", "pseudo", "Joueur")
+	
 	FirebaseManager.leaderboard_update(pseudo, delta)
 
-	# 2. Afficher l'UI de résultat
+	# 3. Affichage et mise à jour de l'UI
 	var ui = get_tree().root.find_child("GameOverUI", true, false)
 	if ui:
-		var is_winner  = (winner_id == FirebaseManager.my_pid)
-		var status_lbl = ui.get_node_or_null("StatusLabel")
+		# Correction des chemins (NodePath) car les labels sont dans des containers
+		var container = "CenterContainer/MainPanel/MarginContainer/VBoxContainer/"
+		var status_lbl = ui.get_node_or_null(container + "StatusLabel")
+		var score_lbl  = ui.get_node_or_null(container + "ScoreContainer/ScoreMargin/ScoreVBox/FinalScoreLabel")
+		var score_header = ui.get_node_or_null(container + "ScoreContainer/ScoreMargin/ScoreVBox/ScoreHeaderLabel")
+
+		# Mise à jour du texte de Victoire / Défaite
 		if status_lbl:
 			status_lbl.text = "VICTOIRE 🏆" if is_winner else "DÉFAITE 💀"
-		ui.visible = true
-		print("[Game] UI résultat affichée — ", status_lbl.text if status_lbl else "?")
+			# Optionnel : changer la couleur du texte
+			status_lbl.add_theme_color_override("font_color", Color.YELLOW if is_winner else Color.INDIAN_RED)
 
+		# Mise à jour du nombre de trophées (FinalScoreLabel)
+		if score_lbl:
+			var prefix = "+" if delta > 0 else ""
+			score_lbl.text = prefix + str(delta)
+			score_lbl.add_theme_color_override("font_color", Color.GREEN if is_winner else Color.RED)
+		
+		if score_header:
+			score_header.text = "TROPHÉES"
+
+		ui.visible = true
 # ══════════════════════════════════════════════════════════════════════════════
 #  SETUP BARRES
 # ══════════════════════════════════════════════════════════════════════════════

@@ -11,9 +11,9 @@ var grid_data      = []
 var score          = 0
 
 # ─── Stats multijoueur ────────────────────────────────────────────────────────
-var player_hp      : int = 3000
+var player_hp      : int = 1500
 var player_shield  : int = 0
-var opponent_hp    : int = 3000
+var opponent_hp    : int = 1500
 var opponent_shield: int = 0
 
 signal game_over(winner: String)

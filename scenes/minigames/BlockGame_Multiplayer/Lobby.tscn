@@ -15,40 +15,54 @@ fill_to = Vector2(0.5, 1)
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.2, 1), 0.0, 0.0, 0, 0, Vector2(0.8, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Profile"]
-bg_color = Color(0.07, 0.07, 0.16, 0.8)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.49, 0.3, 1, 0.5)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ProfileModern"]
+bg_color = Color(0.0941176, 0.0941176, 0.2, 0.901961)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.32549, 0.34902, 1, 0.6)
+corner_radius_top_left = 20
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 20
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 8
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Avatar"]
+bg_color = Color(0.184314, 0.207843, 0.45098, 1)
 corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Trophy"]
-bg_color = Color(0.1, 0.1, 0.2, 0.6)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.84, 0, 0.6)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-expand_margin_left = 10.0
-expand_margin_right = 10.0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TrophyPremium"]
+bg_color = Color(0.12, 0.12, 0.25, 0.8)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 0.843137, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+expand_margin_left = 15.0
+expand_margin_right = 15.0
+shadow_color = Color(1, 0.84, 0, 0.15)
+shadow_size = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Leaderboard"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_LeaderboardPremium"]
 bg_color = Color(0.49, 0.3, 1, 1)
 border_width_bottom = 6
 border_color = Color(0.35, 0.2, 0.8, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Battle_Normal"]
 bg_color = Color(0.18, 0.8, 0.44, 1)
@@ -79,7 +93,7 @@ corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 
-[node name="Lobby" type="Control" unique_id=914607427]
+[node name="Lobby" type="Control" unique_id=741110298]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -88,7 +102,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tjsx0")
 
-[node name="BG_Texture" type="TextureRect" parent="." unique_id=1816701217]
+[node name="BG_Texture" type="TextureRect" parent="." unique_id=1899457330]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -97,7 +111,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_bg")
 
-[node name="Particles" type="CPUParticles2D" parent="." unique_id=1601269445]
+[node name="Particles" type="CPUParticles2D" parent="." unique_id=1387605723]
 position = Vector2(540, 1100)
 amount = 12
 lifetime = 6.0
@@ -124,95 +138,134 @@ color = Color(0.49, 0.3, 1, 0.15)
 hue_variation_min = -0.1
 hue_variation_max = 0.1
 
-[node name="TopBar" type="MarginContainer" parent="." unique_id=533704661]
+[node name="TopBar" type="MarginContainer" parent="." unique_id=1912155544]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 120.0
 grow_horizontal = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
 
-[node name="HBox" type="HBoxContainer" parent="TopBar" unique_id=316704359]
+[node name="HBox" type="HBoxContainer" parent="TopBar" unique_id=985884685]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="PlayerProfile" type="PanelContainer" parent="TopBar/HBox" unique_id=1588024812]
-custom_minimum_size = Vector2(250, 0)
+[node name="PlayerProfile" type="PanelContainer" parent="TopBar/HBox" unique_id=1148218488]
+custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_Profile")
+theme_override_styles/panel = SubResource("StyleBoxFlat_ProfileModern")
 
-[node name="Margin" type="MarginContainer" parent="TopBar/HBox/PlayerProfile" unique_id=580373384]
+[node name="HBox" type="HBoxContainer" parent="TopBar/HBox/PlayerProfile" unique_id=284910823]
 layout_mode = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_right = 15
+theme_override_constants/separation = 15
 
-[node name="VBox" type="VBoxContainer" parent="TopBar/HBox/PlayerProfile/Margin" unique_id=71864114]
+[node name="MarginAvatar" type="MarginContainer" parent="TopBar/HBox/PlayerProfile/HBox" unique_id=1605181567]
 layout_mode = 2
-alignment = 1
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
 
-[node name="PseudoLabel" type="Label" parent="TopBar/HBox/PlayerProfile/Margin/VBox" unique_id=248223937]
-unique_name_in_owner = true
+[node name="AvatarBox" type="Panel" parent="TopBar/HBox/PlayerProfile/HBox/MarginAvatar" unique_id=1693415666]
+custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_Avatar")
+
+[node name="Emoji" type="Label" parent="TopBar/HBox/PlayerProfile/HBox/MarginAvatar/AvatarBox" unique_id=397506168]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -14.0
+offset_right = 20.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 22
-text = "JOUEUR"
-
-[node name="IDLabel" type="Label" parent="TopBar/HBox/PlayerProfile/Margin/VBox" unique_id=580812061]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.42, 0.42, 0.6, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 12
-text = "ID: #abc123"
-
-[node name="Spacer" type="Control" parent="TopBar/HBox" unique_id=1260421638]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TrophyBox" type="PanelContainer" parent="TopBar/HBox" unique_id=1800961839]
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_Trophy")
-
-[node name="TrophyLabel" type="Label" parent="TopBar/HBox/TrophyBox" unique_id=512895764]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.84, 0, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 45
-text = "🏆 1,250"
+theme_override_font_sizes/font_size = 25
+text = "👤"
 horizontal_alignment = 1
 
-[node name="Spacer2" type="Control" parent="TopBar/HBox" unique_id=799452111]
+[node name="VBox" type="VBoxContainer" parent="TopBar/HBox/PlayerProfile/HBox" unique_id=12059123]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="PseudoLabel" type="Label" parent="TopBar/HBox/PlayerProfile/HBox/VBox" unique_id=909437534]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "JOUEUR"
+vertical_alignment = 1
+
+[node name="IDLabel" type="Label" parent="TopBar/HBox/PlayerProfile/HBox/VBox" unique_id=855910166]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.588235, 0.588235, 0.8, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 14
+text = "ID: #ABC123"
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="TopBar/HBox" unique_id=1787451913]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LeaderboardBtn" type="Button" parent="TopBar/HBox" unique_id=569781132]
+[node name="TrophyBox" type="PanelContainer" parent="TopBar/HBox" unique_id=1132538220]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_TrophyPremium")
+
+[node name="TrophyLabel" type="Label" parent="TopBar/HBox/TrophyBox" unique_id=25739687]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.2)
+theme_override_constants/shadow_outline_size = 8
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 40
+text = "🏆 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer2" type="Control" parent="TopBar/HBox" unique_id=1089961200]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="LeaderboardBtn" type="Button" parent="TopBar/HBox" unique_id=882041677]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
+size_flags_vertical = 4
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 35
-theme_override_styles/normal = SubResource("StyleBoxFlat_Leaderboard")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_LeaderboardPremium")
 text = "≡"
 
-[node name="MainContent" type="CenterContainer" parent="." unique_id=304144718]
+[node name="MainContent" type="CenterContainer" parent="." unique_id=1138810977]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="VBox" type="VBoxContainer" parent="MainContent" unique_id=1298410013]
+[node name="VBox" type="VBoxContainer" parent="MainContent" unique_id=1928765934]
 layout_mode = 2
 theme_override_constants/separation = 50
 
-[node name="LogoContainer" type="Control" parent="MainContent/VBox" unique_id=831273299]
+[node name="LogoContainer" type="Control" parent="MainContent/VBox" unique_id=625516623]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
-[node name="GameTitle" type="Label" parent="MainContent/VBox/LogoContainer" unique_id=1472000712]
+[node name="GameTitle" type="Label" parent="MainContent/VBox/LogoContainer" unique_id=627509348]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -233,15 +286,15 @@ theme_override_constants/shadow_offset_y = 10
 theme_override_constants/outline_size = 12
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 100
-text = "BLOCK
+text = "BLOCKy
 BATTLE"
 horizontal_alignment = 1
 
-[node name="Buttons" type="VBoxContainer" parent="MainContent/VBox" unique_id=528774623]
+[node name="Buttons" type="VBoxContainer" parent="MainContent/VBox" unique_id=1526779324]
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="BattleBtn" type="Button" parent="MainContent/VBox/Buttons" unique_id=868334045]
+[node name="BattleBtn" type="Button" parent="MainContent/VBox/Buttons" unique_id=1428738839]
 custom_minimum_size = Vector2(400, 120)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0.35, 0.15, 1)
@@ -252,7 +305,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_Battle_Normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_Battle_Pressed")
 text = "BATTLE !"
 
-[node name="CancelBtn" type="Button" parent="MainContent/VBox/Buttons" unique_id=1581966938]
+[node name="CancelBtn" type="Button" parent="MainContent/VBox/Buttons" unique_id=1161078181]
 visible = false
 custom_minimum_size = Vector2(300, 80)
 layout_mode = 2
@@ -262,7 +315,7 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_Cancel")
 text = "ANNULER"
 
-[node name="StatusLabel" type="Label" parent="MainContent/VBox/Buttons" unique_id=1721068339]
+[node name="StatusLabel" type="Label" parent="MainContent/VBox/Buttons" unique_id=1833572544]
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.74, 0.84, 0.95, 1)

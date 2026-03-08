@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://b6q84d0ff2dtq" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/PieceM.tscn" id="5_3sh80"]
 [ext_resource type="PackedScene" uid="uid://cjglfnr2g545c" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_3M.tscn" id="6_6l4vd"]
 [ext_resource type="PackedScene" uid="uid://bg3j0h8tys20y" path="res://scenes/minigames/BlockGame_Multiplayer/TypesPieces/piece_2M.tscn" id="7_1wyxg"]
-[ext_resource type="Script" uid="uid://3uvkf88ve23n" path="res://scripts/minigame_blocky/game_over_ui_Multiplayer.gd" id="9_3sh80"]
+[ext_resource type="Script" uid="uid://3uvkf88ve23n" path="res://scenes/ui/game_over_ui_Multiplayer.gd" id="9_3sh80"]
 [ext_resource type="Script" uid="uid://cqncrpopjqynw" path="res://scenes/minigames/BlockGame_Multiplayer/game_state_manager.gd" id="37_vjgw5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Quit"]
@@ -465,7 +465,6 @@ vertical_alignment = 1
 
 [node name="GameOverUI" type="CanvasLayer" parent="." unique_id=1164116759]
 layer = 10
-visible = false
 script = ExtResource("9_3sh80")
 
 [node name="Overlay" type="ColorRect" parent="GameOverUI" unique_id=1199785084]
@@ -606,7 +605,8 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_gov_btn_quit_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_gov_btn_quit_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_gov_btn_quit_hover")
 theme_override_styles/focus = SubResource("StyleBoxFlat_gov_btn_quit_normal")
-text = "🏠  Village"
+text = "🏠  Quitter
+"
 
 [connection signal="pressed" from="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox/RestartButton" to="GameOverUI" method="_on_restart_button_pressed"]
 [connection signal="pressed" from="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox/QuitButton" to="GameOverUI" method="_on_quit_button_pressed"]
