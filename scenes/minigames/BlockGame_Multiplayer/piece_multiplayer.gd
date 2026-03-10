@@ -4,7 +4,7 @@ extends Node2D
 @export var idle_scale:    float = 0.6
 @export var drag_offset_y: float = -150.0   # décalage visuel : la pièce flotte AU-DESSUS du curseur
 @export var tween_speed:   float = 0.15
-@export var cell_size:     int   = 120
+@export var cell_size:     int   = 110  # !! CORRECTION : mis à jour de 120 → 110
 
 var dragging:     bool    = false
 var offset:       Vector2 = Vector2.ZERO
@@ -93,18 +93,28 @@ func _process(_delta):
 	var top_left_positions: Array = []
 	var source_cr: ColorRect       = null
 
+	# ── CORRECTION (même logique que check_placement) ───────────────────────
+	# On utilise la position de l'ancre + offsets locaux pour calculer les
+	# positions de preview, évitant ainsi les erreurs d'arrondi cumulées
+	# qui faisaient "sauter" les blocs des grosses pièces.
+	var children_blocks: Array = []
 	for child in get_children():
 		if child is Node2D:
-			# ── CORRECTION CLÉ ──────────────────────────────────────────────
-			# La pièce est affichée drag_offset_y px AU-DESSUS du curseur.
-			# Pour que la preview s'affiche là où l'utilisateur POINTE réellement,
-			# on compense le décalage vertical : on soustrait drag_offset_y.
-			# drag_offset_y = -150  →  -(-150) = +150  →  on descend de 150px
-			# Ce qui correspond exactement à la position sous le curseur.
-			var placement_pos = child.global_position - Vector2(0, drag_offset_y)
-			top_left_positions.append(placement_pos)
+			children_blocks.append(child)
 			if source_cr == null:
 				source_cr = child.get_node_or_null("ColorRect")
+
+	if not children_blocks.is_empty():
+		var anchor = children_blocks[0]
+		var anchor_placement = anchor.global_position - Vector2(0, drag_offset_y)
+		top_left_positions.append(anchor_placement)
+		for i in range(1, children_blocks.size()):
+			var block = children_blocks[i]
+			var local_offset = block.position - anchor.position
+			var delta_x = int(round(local_offset.x / float(cell_size)))
+			var delta_y = int(round(local_offset.y / float(cell_size)))
+			# On reconstitue la position preview à partir de l'ancre + delta en pixels (cell_size)
+			top_left_positions.append(anchor_placement + Vector2(delta_x * cell_size, delta_y * cell_size))
 
 	if source_cr != null and not top_left_positions.is_empty():
 		grid.show_preview(top_left_positions, piece_color, source_cr)
@@ -154,26 +164,40 @@ func check_placement():
 	var placement_data: Array = []
 	var coords_only:    Array = []
 
+	# ── CORRECTION BUG "PIÈCES QUI SE DIVISENT" ─────────────────────────────
+	# AVANT : get_cell_coordinates() appelé indépendamment pour chaque bloc.
+	#   → position_globale / cell_dim (110) accumulait des erreurs d'arrondi.
+	#   → Exemple : offset 720px → 720/110 = 6.545 → round() = 7 au lieu de 6
+	#     → un bloc "saute" une case → GAP visible dans la grille.
+	#
+	# APRÈS : on ancre sur le 1er bloc (1 seul appel get_cell_coordinates),
+	#   puis on dérive toutes les autres cases via les positions LOCALES
+	#   de la pièce divisées par cell_size (110).
+	#   → Arrondi exact et indépendant pour chaque bloc, sans accumulation.
+
+	# 1. Coordonnée de référence via le premier bloc
+	var anchor_block    = blocks[0]
+	var anchor_adjusted = anchor_block.global_position - Vector2(0, drag_offset_y)
+	var anchor_coords   = grid.get_cell_coordinates(anchor_adjusted)
+
+	print("[PIECE]   ancre phys=", anchor_block.global_position,
+		  " → ajusté=", anchor_adjusted,
+		  " → coords=", anchor_coords)
+
+	if anchor_coords == null:
+		print("[PIECE] ancre hors grille → retour start")
+		_shake_feedback(); return_to_start(); return
+
+	# 2. Chaque bloc → delta en cellules depuis l'ancre (positions locales)
 	for block in blocks:
-		# ── CORRECTION CLÉ ──────────────────────────────────────────────────
-		# Même compensation que dans _process / preview :
-		# on soustrait drag_offset_y pour ramener le calcul à la position
-		# réelle sous le curseur, et non à la position visuelle décalée.
-		#
-		# EXEMPLE avec drag_offset_y = -150 :
-		#   - Souris à y=1050, pièce root à y=900, Block à y=900
-		#   - Sans compensation : grid_y = round((900-300)/120) = 5 → ZONE ROUGE ❌
-		#   - Avec compensation : grid_y = round((1050-300)/120) = 6.25 ≈ 6 → ZONE BLEUE ✓
-		var adjusted = block.global_position - Vector2(0, drag_offset_y)
-		var coords   = grid.get_cell_coordinates(adjusted)
+		var local_offset = block.position - anchor_block.position
+		var delta_x = int(round(local_offset.x / float(cell_size)))
+		var delta_y = int(round(local_offset.y / float(cell_size)))
+		var coords  = anchor_coords + Vector2(delta_x, delta_y)
 
-		print("[PIECE]   bloc phys=", block.global_position,
-			  " → ajusté=", adjusted,
+		print("[PIECE]   bloc local=", block.position,
+			  " → delta=(", delta_x, ",", delta_y, ")",
 			  " → coords=", coords)
-
-		if coords == null:
-			print("[PIECE] hors grille → retour start")
-			_shake_feedback(); return_to_start(); return
 
 		placement_data.append({"coords": coords, "node": block})
 		coords_only.append(coords)

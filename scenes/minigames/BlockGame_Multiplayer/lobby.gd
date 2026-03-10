@@ -33,6 +33,19 @@ var _debug_save_path : String = "user://player.cfg"
 
 func _ready():
 	randomize()
+	if Engine.has_singleton("AdMob"):
+		var admob = Engine.get_singleton("AdMob")
+
+		admob.initialize()
+
+		# charger une banner test
+		admob.load_banner("ca-app-pub-3940256099942544/6300978111")
+
+		# position en bas
+		admob.set_banner_position("bottom")
+
+		# afficher
+		admob.show_banner()
 	
 	# --- LOGIQUE DE PERSISTANCE DEBUG ---
 	if OS.has_feature("debug"):
@@ -47,8 +60,12 @@ func _ready():
 	else:
 		# En version réelle, on génère/charge l'ID normalement
 		_player_id = _generate_id()
+	
+	if FirebaseManager.veut_rejouer_directement:
+		FirebaseManager.veut_rejouer_directement = false # On le remet à zéro
+		_on_battle_btn_pressed() # On appelle la fonction du bouton Battle
 	# ------------------------------------
-
+	
 	_update_player_stats() 
 	_animate_logo()        
 	_set_ui_idle()         
@@ -327,3 +344,7 @@ func _notification(what):
 		
 		# ---> AJOUT : On nettoie d'éventuels matchs non consommés à la fermeture
 		FirebaseManager.fb_delete("/player_matches/%s.json" % _player_id)
+
+
+func _on_solo_btn_pressed():
+	Transition.change_scene("res://scenes/minigames/BlockGame/MainBlockGame.tscn")

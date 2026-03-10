@@ -142,7 +142,7 @@ hue_variation_max = 0.1
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 120.0
+offset_bottom = 154.0
 grow_horizontal = 2
 theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 30
@@ -239,6 +239,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
+[node name="Spacer3" type="Control" parent="TopBar/HBox" unique_id=2065745877]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
 [node name="LeaderboardBtn" type="Button" parent="TopBar/HBox" unique_id=882041677]
 custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
@@ -325,4 +330,16 @@ text = "PRET AU COMBAT"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="SoloBtn" type="Button" parent="MainContent/VBox/Buttons" unique_id=1181635803]
+custom_minimum_size = Vector2(400, 120)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.9254902, 0.34901962, 0.14901961, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxFlat_Battle_Normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_Battle_Pressed")
+text = "Solo "
+
 [connection signal="pressed" from="TopBar/HBox/LeaderboardBtn" to="." method="_on_leaderboard_btn_pressed"]
+[connection signal="pressed" from="MainContent/VBox/Buttons/SoloBtn" to="." method="_on_solo_btn_pressed"]

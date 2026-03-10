@@ -27,7 +27,7 @@ var _game_start_ts        : float = 0.0   # Timestamp Unix du début de partie
 
 var _is_connected   : bool = false
 var _game_over_sent : bool = false         # ← Verrou anti double-envoi de fin de partie
-
+var veut_rejouer_directement : bool = false
 var _grid  : Node = null
 var _timer : Node = null
 

@@ -5,7 +5,7 @@ extends Node2D
 
 var grid_rows = 12   # nombre de lignes
 var grid_cols = 8    # nombre de colonnes
-var cell_dim  = 120
+var cell_dim  = 110
 var grid_positions = []
 var grid_data      = []
 var score          = 0

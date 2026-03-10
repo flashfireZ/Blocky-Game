@@ -10,158 +10,154 @@
 [ext_resource type="Script" uid="uid://3uvkf88ve23n" path="res://scenes/ui/game_over_ui_Multiplayer.gd" id="9_3sh80"]
 [ext_resource type="Script" uid="uid://cqncrpopjqynw" path="res://scenes/minigames/BlockGame_Multiplayer/game_state_manager.gd" id="37_vjgw5"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Quit"]
-bg_color = Color(0.75, 0.1, 0.18, 1)
-border_width_bottom = 3
-border_color = Color(0.4, 0.05, 0.08, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0, 0, 0, 0.45)
-shadow_size = 6
-shadow_offset = Vector2(0, 3)
+[sub_resource type="Gradient" id="Gradient_bg"]
+colors = PackedColorArray(0.08, 0.09, 0.13, 1, 0.04, 0.04, 0.06, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Quit_pressed"]
-bg_color = Color(0.55, 0.08, 0.14, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="GradientTexture2D" id="GradTex_bg"]
+gradient = SubResource("Gradient_bg")
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Quit_hover"]
-bg_color = Color(0.92, 0.15, 0.22, 1)
-border_width_bottom = 3
-border_color = Color(0.4, 0.05, 0.08, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="Curve" id="Curve_particles"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.2, 1), 0.0, 0.0, 0, 0, Vector2(0.8, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
-bg_color = Color(0.07, 0.07, 0.17, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxEmpty" id="SB_OppCard"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_opp"]
-bg_color = Color(0.92, 0.18, 0.22, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0.92, 0.18, 0.22, 0.5)
-shadow_size = 12
+[sub_resource type="StyleBoxEmpty" id="SB_PlayerCard"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_shield"]
-bg_color = Color(0.25, 0.65, 1, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0.25, 0.65, 1, 0.4)
-shadow_size = 8
+[sub_resource type="StyleBoxEmpty" id="SB_PieceTrayPanel"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hp_player"]
-bg_color = Color(0.12, 0.88, 0.38, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-shadow_color = Color(0.12, 0.88, 0.38, 0.5)
-shadow_size = 12
+[sub_resource type="StyleBoxFlat" id="SB_QuitNormal"]
+bg_color = Color(0.15, 0.16, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_panel"]
-bg_color = Color(0.07, 0.07, 0.16, 0.98)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.35, 0.35, 0.75, 0.9)
-corner_radius_top_left = 22
-corner_radius_top_right = 22
-corner_radius_bottom_right = 22
-corner_radius_bottom_left = 22
-expand_margin_left = 4.0
-expand_margin_top = 4.0
-expand_margin_right = 4.0
-expand_margin_bottom = 4.0
-shadow_color = Color(0, 0, 0, 0.65)
-shadow_size = 28
-shadow_offset = Vector2(0, 6)
+[sub_resource type="StyleBoxFlat" id="SB_QuitPressed"]
+bg_color = Color(0.1, 0.11, 0.14, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_separator"]
-bg_color = Color(0.35, 0.35, 0.65, 0.45)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[sub_resource type="StyleBoxFlat" id="SB_QuitHover"]
+bg_color = Color(0.2, 0.22, 0.28, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_score_bg"]
-bg_color = Color(0.12, 0.12, 0.25, 0.85)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.3, 0.3, 0.6, 0.5)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="SB_BarBg"]
+bg_color = Color(0.12, 0.13, 0.18, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_btn_restart_normal"]
-bg_color = Color(0.13, 0.55, 0.28, 1)
-border_width_bottom = 3
-border_color = Color(0.08, 0.35, 0.18, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="SB_HPOpp"]
+bg_color = Color(1, 0.35, 0.35, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_btn_restart_pressed"]
-bg_color = Color(0.1, 0.42, 0.22, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="SB_Shield"]
+bg_color = Color(0.2, 0.7, 1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_btn_restart_hover"]
-bg_color = Color(0.18, 0.68, 0.35, 1)
-border_width_bottom = 3
-border_color = Color(0.08, 0.35, 0.18, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="SB_HPPlayer"]
+bg_color = Color(0.2, 0.85, 0.45, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_btn_quit_normal"]
-bg_color = Color(0.55, 0.13, 0.13, 1)
-border_width_bottom = 3
-border_color = Color(0.35, 0.07, 0.07, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="SB_GOVPanel"]
+bg_color = Color(0.08, 0.09, 0.12, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.2)
+shadow_size = 20
+shadow_offset = Vector2(0, 10)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_btn_quit_pressed"]
-bg_color = Color(0.4, 0.09, 0.09, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="SB_GOVSep"]
+bg_color = Color(1, 1, 1, 0.05)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gov_btn_quit_hover"]
-bg_color = Color(0.7, 0.18, 0.18, 1)
-border_width_bottom = 3
-border_color = Color(0.35, 0.07, 0.07, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
+[sub_resource type="StyleBoxFlat" id="SB_GOVScoreBg"]
+bg_color = Color(0.12, 0.13, 0.18, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="SB_QuitGOVNormal"]
+bg_color = Color(0.85, 0.25, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="SB_QuitGOVPressed"]
+bg_color = Color(0.65, 0.15, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="SB_QuitGOVHover"]
+bg_color = Color(0.95, 0.35, 0.25, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
 
 [node name="MainBlockGame" type="Node2D" unique_id=122172837]
 script = ExtResource("1_tucik")
+
+[node name="BgGradient" type="TextureRect" parent="." unique_id=200000001]
+z_index = -2
+offset_right = 1080.0
+offset_bottom = 1920.0
+mouse_filter = 2
+texture = SubResource("GradTex_bg")
+
+[node name="BgParticles" type="CPUParticles2D" parent="." unique_id=200000002]
+visible = false
+z_index = -1
+position = Vector2(540, 1100)
+amount = 12
+lifetime = 6.0
+preprocess = 3.0
+speed_scale = 0.5
+fixed_fps = 60
+draw_order = 1
+emission_shape = 3
+emission_rect_extents = Vector2(600, 1)
+direction = Vector2(0, -1)
+spread = 10.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+angular_velocity_min = 20.0
+angular_velocity_max = 50.0
+scale_amount_min = 20.0
+scale_amount_max = 60.0
+scale_amount_curve = SubResource("Curve_particles")
+split_scale = true
+scale_curve_x = null
+scale_curve_y = null
+color = Color(0.49, 0.3, 1, 0.1)
 
 [node name="BackgroundPrincipal" type="ColorRect" parent="." unique_id=345923923]
 anchors_preset = 15
@@ -172,7 +168,7 @@ offset_bottom = 1920.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.05, 0.05, 0.12, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="ComboLabel" type="Label" parent="BackgroundPrincipal" unique_id=693269893]
 layout_mode = 1
@@ -187,11 +183,11 @@ offset_right = 279.0
 offset_bottom = 397.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.2, 0.92)
-theme_override_colors/font_outline_color = Color(0.5, 0.3, 0, 0.7)
-theme_override_constants/outline_size = 5
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 80
+theme_override_font_sizes/font_size = 72
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -205,37 +201,69 @@ offset_bottom = 189.0
 theme_override_fonts/font = ExtResource("4_nky6x")
 theme_override_font_sizes/font_size = 30
 
+[node name="GridBackdrop" type="ColorRect" parent="." unique_id=200000003]
+z_index = -1
+offset_left = 54.0
+offset_top = 144.0
+offset_right = 1026.0
+offset_bottom = 1593.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.03)
+
+[node name="GridMidLine" type="ColorRect" parent="." unique_id=200000004]
+visible = false
+z_index = 1
+offset_left = 60.0
+offset_top = 868.0
+offset_right = 1020.0
+offset_bottom = 870.0
+mouse_filter = 2
+color = Color(1, 1, 1, 0.1)
+
 [node name="PieceTrayRect" type="ColorRect" parent="." unique_id=343572820]
+visible = false
 z_index = 1
 offset_top = 1590.0
 offset_right = 1080.0
 offset_bottom = 1790.0
 mouse_filter = 2
-color = Color(0.04, 0.04, 0.1, 1)
+color = Color(0, 0, 0, 0)
+
+[node name="PieceTrayTopGlow" type="ColorRect" parent="." unique_id=101000003]
+visible = false
+z_index = 2
+
+[node name="PieceTrayAccentLeft" type="ColorRect" parent="." unique_id=101000004]
+visible = false
+z_index = 4
+
+[node name="PieceTrayAccentRight" type="ColorRect" parent="." unique_id=101000005]
+visible = false
+z_index = 4
+
+[node name="PieceTrayBottomFade" type="ColorRect" parent="." unique_id=101000006]
+visible = false
+z_index = 4
 
 [node name="SepPieceLine" type="ColorRect" parent="." unique_id=237098794]
+visible = false
+z_index = 5
+
+[node name="SepPieceGlow" type="ColorRect" parent="." unique_id=101000007]
+visible = false
 z_index = 3
-offset_top = 1590.0
-offset_right = 1080.0
-offset_bottom = 1595.0
-mouse_filter = 2
-color = Color(0.28, 0.28, 0.55, 0.65)
 
 [node name="PlayerAreaRect" type="ColorRect" parent="." unique_id=1607216725]
+visible = false
 z_index = 1
-offset_top = 1790.0
-offset_right = 1080.0
-offset_bottom = 1920.0
-mouse_filter = 2
-color = Color(0.045, 0.08, 0.17, 1)
 
 [node name="SepPlayerLine" type="ColorRect" parent="." unique_id=736583849]
+visible = false
+z_index = 5
+
+[node name="SepPlayerGlow" type="ColorRect" parent="." unique_id=101000008]
+visible = false
 z_index = 3
-offset_top = 1790.0
-offset_right = 1080.0
-offset_bottom = 1795.0
-mouse_filter = 2
-color = Color(0.15, 0.88, 0.38, 0.75)
 
 [node name="GridMultiplayer" type="Node2D" parent="." unique_id=532738548]
 script = ExtResource("2_asxbh")
@@ -263,88 +291,114 @@ piece_templates = Array[PackedScene]([ExtResource("7_1wyxg"), ExtResource("6_6l4
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2058853076]
 
 [node name="TopBG" type="ColorRect" parent="HUD" unique_id=1680253129]
-anchors_preset = 10
-anchor_right = 1.0
-offset_bottom = 140.0
+visible = false
+
+[node name="TopBGInnerGlow" type="ColorRect" parent="HUD" unique_id=101000009]
+visible = false
+
+[node name="OpponentCardBG" type="PanelContainer" parent="HUD" unique_id=101000010]
+offset_left = 290.0
+offset_top = 6.0
+offset_right = 790.0
+offset_bottom = 134.0
 mouse_filter = 2
-color = Color(0.09, 0.05, 0.15, 0.97)
+theme_override_styles/panel = SubResource("SB_OppCard")
 
 [node name="TopAccentLine" type="ColorRect" parent="HUD" unique_id=91608898]
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 136.0
-offset_bottom = 140.0
-mouse_filter = 2
-color = Color(0.88, 0.2, 0.28, 0.8)
+visible = false
+
+[node name="TopAccentGlow" type="ColorRect" parent="HUD" unique_id=101000011]
+visible = false
 
 [node name="PlayerBG" type="ColorRect" parent="HUD" unique_id=597395178]
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 1790.0
-offset_bottom = 1920.0
-grow_horizontal = 2
+visible = false
+
+[node name="PlayerCardBG" type="PanelContainer" parent="HUD" unique_id=101000012]
+offset_left = 16.0
+offset_top = 1800.0
+offset_right = 1064.0
+offset_bottom = 1914.0
 mouse_filter = 2
-color = Color(0.05, 0.09, 0.18, 0.97)
+theme_override_styles/panel = SubResource("SB_PlayerCard")
 
 [node name="PlayerAccentLine" type="ColorRect" parent="HUD" unique_id=142214697]
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 1790.0
-offset_bottom = 1794.0
+visible = false
+
+[node name="PlayerAccentGlow" type="ColorRect" parent="HUD" unique_id=101000013]
+visible = false
+
+[node name="PieceTrayFrame" type="PanelContainer" parent="HUD" unique_id=200000005]
+offset_left = 5.0
+offset_top = 1596.0
+offset_right = 1075.0
+offset_bottom = 1787.0
 mouse_filter = 2
-color = Color(0.15, 0.88, 0.38, 0.82)
+theme_override_styles/panel = SubResource("SB_PieceTrayPanel")
+
+[node name="PieceTrayHeader" type="Label" parent="HUD" unique_id=101000014]
+visible = false
+offset_top = 1597.0
+offset_right = 1080.0
+offset_bottom = 1625.0
 
 [node name="TopBar" type="MarginContainer" parent="HUD" unique_id=942154663]
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 140.0
 grow_horizontal = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 6
 
 [node name="HBox" type="HBoxContainer" parent="HUD/TopBar" unique_id=2135116674]
 layout_mode = 2
-theme_override_constants/separation = 0
+theme_override_constants/separation = 10
 
 [node name="QuitBtn" type="Button" parent="HUD/TopBar/HBox" unique_id=863215343]
-custom_minimum_size = Vector2(120, 52)
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 19
-theme_override_styles/normal = SubResource("StyleBoxFlat_Quit")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_Quit_pressed")
-theme_override_styles/hover = SubResource("StyleBoxFlat_Quit_hover")
-theme_override_styles/focus = SubResource("StyleBoxFlat_Quit")
-text = "✖  QUIT"
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("SB_QuitNormal")
+theme_override_styles/pressed = SubResource("SB_QuitPressed")
+theme_override_styles/hover = SubResource("SB_QuitHover")
+theme_override_styles/focus = SubResource("SB_QuitNormal")
+text = "QUIT"
 
 [node name="Spacer1" type="Control" parent="HUD/TopBar/HBox" unique_id=301642548]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="OpponentStats" type="VBoxContainer" parent="HUD/TopBar/HBox" unique_id=265292620]
-custom_minimum_size = Vector2(430, 0)
+custom_minimum_size = Vector2(460, 0)
 layout_mode = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 8
 
 [node name="OpponentLabel" type="Label" parent="HUD/TopBar/HBox/OpponentStats" unique_id=513139021]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.55, 0.55, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 0.8)
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
 theme_override_font_sizes/font_size = 20
-text = "ID Opponent"
+text = "ADVERSAIRE"
 horizontal_alignment = 1
 
 [node name="HPBarOpponent" type="ProgressBar" parent="HUD/TopBar/HBox/OpponentStats" unique_id=1225804908]
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_hp_opp")
-max_value = 3000.0
-value = 3000.0
+theme_override_styles/background = SubResource("SB_BarBg")
+theme_override_styles/fill = SubResource("SB_HPOpp")
+max_value = 1500.0
+value = 1500.0
 show_percentage = false
+
+[node name="HpOppGloss" type="ColorRect" parent="HUD/TopBar/HBox/OpponentStats/HPBarOpponent" unique_id=101000015]
+visible = false
+layout_mode = 1
 
 [node name="HealthLabelOpponent" type="Label" parent="HUD/TopBar/HBox/OpponentStats/HPBarOpponent" unique_id=324393748]
 layout_mode = 1
@@ -354,21 +408,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.5)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 24
-text = "3000"
+theme_override_font_sizes/font_size = 20
+text = "1500"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ShieldBarOpponent" type="ProgressBar" parent="HUD/TopBar/HBox/OpponentStats" unique_id=1150578011]
-custom_minimum_size = Vector2(0, 18)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_shield")
+theme_override_styles/background = SubResource("SB_BarBg")
+theme_override_styles/fill = SubResource("SB_Shield")
 max_value = 1000.0
 show_percentage = false
+
+[node name="ShieldOppGloss" type="ColorRect" parent="HUD/TopBar/HBox/OpponentStats/ShieldBarOpponent" unique_id=101000016]
+visible = false
+layout_mode = 1
 
 [node name="ShieldLabelOpponent" type="Label" parent="HUD/TopBar/HBox/OpponentStats/ShieldBarOpponent" unique_id=1869883789]
 layout_mode = 1
@@ -377,9 +434,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -389,40 +447,45 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="SpacerRight" type="Control" parent="HUD/TopBar/HBox" unique_id=1753457828]
-custom_minimum_size = Vector2(120, 0)
+custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="BottomBar" type="MarginContainer" parent="HUD" unique_id=2043662871]
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 1795.0
+offset_top = 1797.0
 offset_bottom = 1920.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 36
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 36
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 16
 
 [node name="PlayerStats" type="VBoxContainer" parent="HUD/BottomBar" unique_id=4314743]
 layout_mode = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 8
 
 [node name="PlayerTag" type="Label" parent="HUD/BottomBar/PlayerStats" unique_id=1396289187]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.5, 0.95, 0.58, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 0.8)
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
 theme_override_font_sizes/font_size = 20
-text = "🛡  VOUS"
+text = "VOUS"
 horizontal_alignment = 1
 
 [node name="ShieldBarPlayer" type="ProgressBar" parent="HUD/BottomBar/PlayerStats" unique_id=1518519694]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 16)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_shield")
-max_value = 1000.0
+theme_override_styles/background = SubResource("SB_BarBg")
+theme_override_styles/fill = SubResource("SB_Shield")
+max_value = 500.0
 show_percentage = false
+
+[node name="ShieldPlayerGloss" type="ColorRect" parent="HUD/BottomBar/PlayerStats/ShieldBarPlayer" unique_id=101000017]
+visible = false
+layout_mode = 1
 
 [node name="ShieldLabelPlayer" type="Label" parent="HUD/BottomBar/PlayerStats/ShieldBarPlayer" unique_id=1172967281]
 layout_mode = 1
@@ -431,21 +494,26 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_colors/font_color = Color(0.85, 0.92, 1, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HPBarPlayer" type="ProgressBar" parent="HUD/BottomBar/PlayerStats" unique_id=1578213377]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_hp_player")
-max_value = 3000.0
-value = 3000.0
+theme_override_styles/background = SubResource("SB_BarBg")
+theme_override_styles/fill = SubResource("SB_HPPlayer")
+max_value = 1500.0
+value = 1500.0
 show_percentage = false
+
+[node name="HpPlayerGloss" type="ColorRect" parent="HUD/BottomBar/PlayerStats/HPBarPlayer" unique_id=101000018]
+visible = false
+layout_mode = 1
 
 [node name="HealthLabelPlayer" type="Label" parent="HUD/BottomBar/PlayerStats/HPBarPlayer" unique_id=2119062358]
 layout_mode = 1
@@ -455,16 +523,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 0.5)
-theme_override_constants/outline_size = 2
+theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 28
-text = "3000"
+theme_override_font_sizes/font_size = 20
+text = "1500"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="GameOverUI" type="CanvasLayer" parent="." unique_id=1164116759]
 layer = 10
+visible = false
 script = ExtResource("9_3sh80")
 
 [node name="Overlay" type="ColorRect" parent="GameOverUI" unique_id=1199785084]
@@ -473,7 +541,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.02, 0.08, 0.88)
+color = Color(0.04, 0.02, 0.12, 0.9)
 
 [node name="CenterContainer" type="CenterContainer" parent="GameOverUI" unique_id=1055299982]
 anchors_preset = 15
@@ -484,16 +552,16 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="MainPanel" type="PanelContainer" parent="GameOverUI/CenterContainer" unique_id=1456219613]
-custom_minimum_size = Vector2(680, 0)
+custom_minimum_size = Vector2(720, 0)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gov_panel")
+theme_override_styles/panel = SubResource("SB_GOVPanel")
 
 [node name="MarginContainer" type="MarginContainer" parent="GameOverUI/CenterContainer/MainPanel" unique_id=864765326]
 layout_mode = 2
-theme_override_constants/margin_left = 64
-theme_override_constants/margin_top = 52
-theme_override_constants/margin_right = 64
-theme_override_constants/margin_bottom = 52
+theme_override_constants/margin_left = 72
+theme_override_constants/margin_top = 56
+theme_override_constants/margin_right = 72
+theme_override_constants/margin_bottom = 56
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer" unique_id=1854664213]
 layout_mode = 2
@@ -501,46 +569,50 @@ theme_override_constants/separation = 0
 
 [node name="TitleLabel" type="Label" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=1814749472]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.55, 0.85, 1)
+theme_override_colors/font_color = Color(0.97, 0.85, 0.21, 1)
+theme_override_colors/font_outline_color = Color(0.45, 0.22, 0, 0.85)
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 text = "— FIN DE PARTIE —"
 horizontal_alignment = 1
 
 [node name="StatusLabel" type="Label" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=1089484271]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 0.85, 0.2, 1)
-theme_override_colors/font_outline_color = Color(0.45, 0.3, 0, 0.55)
-theme_override_constants/outline_size = 5
+theme_override_colors/font_color = Color(0.97, 0.85, 0.21, 1)
+theme_override_colors/font_shadow_color = Color(0.9, 0.45, 0.09, 1)
+theme_override_colors/font_outline_color = Color(0.3, 0.12, 0, 1)
+theme_override_constants/shadow_offset_y = 8
+theme_override_constants/outline_size = 12
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 72
+theme_override_font_sizes/font_size = 80
 text = "VICTOIRE 🏆"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SpacerA" type="Control" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=885289131]
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 
 [node name="SeparatorTop" type="PanelContainer" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=1076208878]
-custom_minimum_size = Vector2(0, 2)
+custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gov_separator")
+theme_override_styles/panel = SubResource("SB_GOVSep")
 
 [node name="SpacerB" type="Control" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=1243827326]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 
 [node name="ScoreContainer" type="PanelContainer" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=1640471231]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gov_score_bg")
+theme_override_styles/panel = SubResource("SB_GOVScoreBg")
 
 [node name="ScoreMargin" type="MarginContainer" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ScoreContainer" unique_id=653862968]
 layout_mode = 2
-theme_override_constants/margin_left = 28
+theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 28
+theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 18
 
 [node name="ScoreVBox" type="VBoxContainer" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ScoreContainer/ScoreMargin" unique_id=205624210]
@@ -549,19 +621,23 @@ theme_override_constants/separation = 6
 
 [node name="ScoreHeaderLabel" type="Label" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ScoreContainer/ScoreMargin/ScoreVBox" unique_id=1304196933]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.55, 0.55, 0.85, 1)
+theme_override_colors/font_color = Color(0.97, 0.85, 0.21, 0.88)
+theme_override_colors/font_outline_color = Color(0.4, 0.2, 0, 0.7)
+theme_override_constants/outline_size = 4
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 22
 text = "✦  SCORE  ✦"
 horizontal_alignment = 1
 
 [node name="FinalScoreLabel" type="Label" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ScoreContainer/ScoreMargin/ScoreVBox" unique_id=1309812085]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.95, 1, 1)
-theme_override_colors/font_outline_color = Color(0.3, 0.3, 0.6, 0.5)
-theme_override_constants/outline_size = 2
+theme_override_colors/font_color = Color(1, 0.98, 0.88, 1)
+theme_override_colors/font_shadow_color = Color(0.5, 0.3, 0, 0.6)
+theme_override_colors/font_outline_color = Color(0.4, 0.2, 0, 0.7)
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/outline_size = 5
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 54
+theme_override_font_sizes/font_size = 64
 text = "0"
 horizontal_alignment = 1
 
@@ -570,9 +646,9 @@ custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 
 [node name="SeparatorBottom" type="PanelContainer" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=614491390]
-custom_minimum_size = Vector2(0, 2)
+custom_minimum_size = Vector2(0, 3)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_gov_separator")
+theme_override_styles/panel = SubResource("SB_GOVSep")
 
 [node name="SpacerD" type="Control" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=444842014]
 custom_minimum_size = Vector2(0, 32)
@@ -580,33 +656,21 @@ layout_mode = 2
 
 [node name="ButtonsHBox" type="HBoxContainer" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=2001866303]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 24
 alignment = 1
 
-[node name="RestartButton" type="Button" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox" unique_id=166886438]
-custom_minimum_size = Vector2(230, 70)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 26
-theme_override_styles/normal = SubResource("StyleBoxFlat_gov_btn_restart_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_gov_btn_restart_pressed")
-theme_override_styles/hover = SubResource("StyleBoxFlat_gov_btn_restart_hover")
-theme_override_styles/focus = SubResource("StyleBoxFlat_gov_btn_restart_normal")
-text = "🔄  Rejouer"
-
 [node name="QuitButton" type="Button" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox" unique_id=237876742]
-custom_minimum_size = Vector2(230, 70)
+custom_minimum_size = Vector2(248, 82)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.35, 0.06, 0.04, 0.9)
+theme_override_constants/outline_size = 8
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 26
-theme_override_styles/normal = SubResource("StyleBoxFlat_gov_btn_quit_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_gov_btn_quit_pressed")
-theme_override_styles/hover = SubResource("StyleBoxFlat_gov_btn_quit_hover")
-theme_override_styles/focus = SubResource("StyleBoxFlat_gov_btn_quit_normal")
-text = "🏠  Quitter
-"
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("SB_QuitGOVNormal")
+theme_override_styles/pressed = SubResource("SB_QuitGOVPressed")
+theme_override_styles/hover = SubResource("SB_QuitGOVHover")
+theme_override_styles/focus = SubResource("SB_QuitGOVNormal")
+text = "🏠  QUITTER"
 
-[connection signal="pressed" from="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox/RestartButton" to="GameOverUI" method="_on_restart_button_pressed"]
 [connection signal="pressed" from="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer/ButtonsHBox/QuitButton" to="GameOverUI" method="_on_quit_button_pressed"]

@@ -11,14 +11,16 @@ config_version=5
 [application]
 
 config/name="Blocky Battle"
-run/main_scene="uid://s6vqh4m78o1k"
+run/main_scene="res://scenes/minigames/BlockGame_Multiplayer/SplashScreen.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
+boot_splash/image="uid://bygvw5svgfl5b"
 config/icon="res://icon.svg"
 
 [autoload]
 
 GameData="*uid://d1s1qjgp2pjrb"
 FirebaseManager="*uid://cy83cnaehuhm1"
+Transition="*res://scenes/ui/Transition.tscn"
 
 [display]
 
@@ -43,4 +45,7 @@ pointing/emulate_touch_from_mouse=true
 [rendering]
 
 rendering_device/driver.windows="d3d12"
-renderer/rendering_method="mobile"
+rendering_device/driver.android="opengl3"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true

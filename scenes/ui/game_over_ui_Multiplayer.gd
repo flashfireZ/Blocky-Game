@@ -57,7 +57,12 @@ func _play_intro_animation():
 # ─── Boutons ─────────────────────────────────────────────────────────────────
 func _on_restart_button_pressed():
 	save_rewards()
-	get_tree().reload_current_scene()
+	
+	# On active le flag pour le lobby
+	FirebaseManager.veut_rejouer_directement = true
+	
+	# On retourne au Lobby (vérifie bien le chemin de ta scène Lobby ici)
+	get_tree().change_scene_to_file("res://scenes/ui/Lobby.tscn")
 
 func _on_quit_button_pressed():
 	save_rewards()

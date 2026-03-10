@@ -128,8 +128,8 @@ func _on_game_finished(winner_id: String):
 #  SETUP BARRES
 # ══════════════════════════════════════════════════════════════════════════════
 func _setup_bars():
-	var max_hp     = 3000
-	var max_shield = 1000
+	var max_hp     = 1500
+	var max_shield = 500
 
 	hp_bar_player.max_value    = max_hp
 	hp_bar_opp.max_value       = max_hp
