@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var lbl_opponent = $HUD/TopBar/HBox/OpponentStats/OpponentLabel
+@onready var lbl_opponent = $HUD/TopBar/HBox/OpponentLabel
 @onready var grid = $GridMultiplayer
 
 # --- Références aux barres et labels ---
@@ -20,7 +20,7 @@ var _last_shield_player: int  = 0
 var _last_hp_opp       : int  = 3000
 var _last_shield_opp   : int  = 0
 
-var _game_ended : bool = false   # ← Verrou : empêche tout double-traitement de fin
+var _game_ended : bool = false
 
 # ══════════════════════════════════════════════════════════════════════════════
 func _ready():
@@ -36,38 +36,30 @@ func _ready():
 		grid.stats_updated.connect(_update_ui_animated)
 		_update_ui_instant()
 
-		# ── Connexion du signal game_over de la grille vers Firebase ──────────
-		# "player"   → HP joueur local tombés à 0  → adversaire gagne
-		# "opponent" → HP adversaire tombés à 0    → joueur local gagne
-		# On passe par declare_winner_and_finish pour que les DEUX clients
-		# reçoivent le résultat (via l'écriture Firebase).
 		grid.game_over.connect(func(winner: String):
 			if _game_ended: return
 			var winner_pid = FirebaseManager.my_pid if winner == "player" else FirebaseManager.opp_pid
 			FirebaseManager.declare_winner_and_finish(winner_pid)
 		)
 
-	# ── Bouton Quitter (nœud optionnel dans la scène) ─────────────────────────
 	var btn_quit = get_node_or_null("HUD/TopBar/HBox/QuitBtn")
 	if btn_quit and not btn_quit.pressed.is_connected(_on_quit_pressed):
 		btn_quit.pressed.connect(_on_quit_pressed)
 
-# Appelé si le joueur appuie sur Quitter pendant le match
 func _on_quit_pressed():
 	if _game_ended: return
 	print("[Game] Joueur a appuyé sur Quitter — défaite par abandon")
 	FirebaseManager.notify_player_quit()
 	get_tree().change_scene_to_file("res://scenes/minigames/BlockGame_Multiplayer/Lobby.tscn")
 
-# Fermeture de la fenêtre pendant une partie = forfait
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST and not _game_ended:
 		FirebaseManager.notify_player_quit()
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  FIN DE PARTIE — Point d'arrivée unique (connecté à FirebaseManager.game_finished)
+#  FIN DE PARTIE
 # ══════════════════════════════════════════════════════════════════════════════
-func _on_game_finished(winner_id: String):
+func _on_game_finished(winner_id: String, trophy_change: int):
 	if _game_ended: return
 	_game_ended = true
 
@@ -77,7 +69,7 @@ func _on_game_finished(winner_id: String):
 	if grid:
 		grid.set_process(false)
 		grid.set_physics_process(false)
-	
+
 	var piece_mgr = get_node_or_null("PieceManagerMultiplayer")
 	if piece_mgr:
 		piece_mgr.set_process(false)
@@ -87,43 +79,39 @@ func _on_game_finished(winner_id: String):
 	if gsm and gsm.has_method("stop_timer"):
 		gsm.stop_timer()
 
-	# 2. Calcul du gain/perte
+	# 2. Utiliser le delta passé directement par le signal (plus de race condition)
 	var is_winner = (winner_id == FirebaseManager.my_pid)
-	var delta = 2 if is_winner else -1
-	
-	# Mise à jour Firebase (on récupère le pseudo depuis le config file local)
-	var config = ConfigFile.new()
-	var pseudo = "Joueur"
-	if config.load("user://player.cfg") == OK:
-		pseudo = config.get_value("player", "pseudo", "Joueur")
-	
-	FirebaseManager.leaderboard_update(pseudo, delta)
+	var delta = trophy_change   # ← directement du signal, pas besoin de last_trophy_change
 
-	# 3. Affichage et mise à jour de l'UI
+	# 3. Affichage du game over
 	var ui = get_tree().root.find_child("GameOverUI", true, false)
 	if ui:
-		# Correction des chemins (NodePath) car les labels sont dans des containers
-		var container = "CenterContainer/MainPanel/MarginContainer/VBoxContainer/"
-		var status_lbl = ui.get_node_or_null(container + "StatusLabel")
-		var score_lbl  = ui.get_node_or_null(container + "ScoreContainer/ScoreMargin/ScoreVBox/FinalScoreLabel")
+		var container    = "CenterContainer/MainPanel/MarginContainer/VBoxContainer/"
+		var status_lbl   = ui.get_node_or_null(container + "StatusLabel")
+		var score_lbl    = ui.get_node_or_null(container + "ScoreContainer/ScoreMargin/ScoreVBox/FinalScoreLabel")
 		var score_header = ui.get_node_or_null(container + "ScoreContainer/ScoreMargin/ScoreVBox/ScoreHeaderLabel")
+		var trophy_lbl   = ui.get_node_or_null(container + "TrophyChangeLabel")
 
-		# Mise à jour du texte de Victoire / Défaite
 		if status_lbl:
 			status_lbl.text = "VICTOIRE 🏆" if is_winner else "DÉFAITE 💀"
-			# Optionnel : changer la couleur du texte
 			status_lbl.add_theme_color_override("font_color", Color.YELLOW if is_winner else Color.INDIAN_RED)
 
-		# Mise à jour du nombre de trophées (FinalScoreLabel)
+		if score_header:
+			score_header.text = "TROPHÉES"
+
 		if score_lbl:
 			var prefix = "+" if delta > 0 else ""
 			score_lbl.text = prefix + str(delta)
 			score_lbl.add_theme_color_override("font_color", Color.GREEN if is_winner else Color.RED)
-		
-		if score_header:
-			score_header.text = "TROPHÉES"
+
+		if trophy_lbl:
+			var prefix = "+" if delta > 0 else ""
+			trophy_lbl.text = "🏆 %s%d trophées" % [prefix, delta]
+			trophy_lbl.add_theme_color_override("font_color", Color.GREEN if is_winner else Color.RED)
 
 		ui.visible = true
+
+
 # ══════════════════════════════════════════════════════════════════════════════
 #  SETUP BARRES
 # ══════════════════════════════════════════════════════════════════════════════
@@ -131,15 +119,15 @@ func _setup_bars():
 	var max_hp     = 1500
 	var max_shield = 500
 
-	hp_bar_player.max_value    = max_hp
-	hp_bar_opp.max_value       = max_hp
+	hp_bar_player.max_value     = max_hp
+	hp_bar_opp.max_value        = max_hp
 	shield_bar_player.max_value = max_shield
-	shield_bar_opp.max_value   = max_shield
+	shield_bar_opp.max_value    = max_shield
 
-	hp_label_player.pivot_offset     = hp_label_player.size     / 2.0
-	shield_label_player.pivot_offset  = shield_label_player.size / 2.0
-	hp_label_opp.pivot_offset        = hp_label_opp.size        / 2.0
-	shield_label_opp.pivot_offset    = shield_label_opp.size    / 2.0
+	hp_label_player.pivot_offset    = hp_label_player.size    / 2.0
+	shield_label_player.pivot_offset = shield_label_player.size / 2.0
+	hp_label_opp.pivot_offset       = hp_label_opp.size       / 2.0
+	shield_label_opp.pivot_offset   = shield_label_opp.size   / 2.0
 
 func _update_ui_instant():
 	if not grid: return
@@ -178,7 +166,7 @@ func _update_ui_animated():
 	_last_shield_opp = grid.opponent_shield
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  EFFETS VISUELS (TWEENS)
+#  EFFETS VISUELS
 # ══════════════════════════════════════════════════════════════════════════════
 func _animate_bar(bar: Range, label: Label, old_val: int, new_val: int):
 	if old_val == new_val: return

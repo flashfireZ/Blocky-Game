@@ -10,15 +10,15 @@ shader_parameter/face_top_h = 0.13
 shader_parameter/face_bottom_h = 0.13
 shader_parameter/face_left_w = 0.13
 shader_parameter/face_right_w = 0.13
-shader_parameter/bright_top = 1.85
+shader_parameter/bright_top = 2.1350000539125
 shader_parameter/bright_left = 1.3
-shader_parameter/bright_center = 1.05
+shader_parameter/bright_center = 1.1140000077440702
 shader_parameter/dark_right = 0.55
-shader_parameter/dark_bottom = 0.35
-shader_parameter/gloss_strength = 0.4
-shader_parameter/gloss_width = 0.55
-shader_parameter/edge_sharpness = 80.0
-shader_parameter/corner_radius = 0.10400000494
+shader_parameter/dark_bottom = 0.27000001119506
+shader_parameter/gloss_strength = 0.4810000228475
+shader_parameter/gloss_width = 0.13000000547648
+shader_parameter/edge_sharpness = 30.5370009755075
+shader_parameter/corner_radius = 0.15000000596046
 shader_parameter/corner_ao = 0.55
 
 [node name="Block" type="Node2D" unique_id=333476312]

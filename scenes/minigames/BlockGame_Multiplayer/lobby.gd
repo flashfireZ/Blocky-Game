@@ -88,7 +88,7 @@ func _update_player_stats():
 		# Si le fichier n'existe pas (premier lancement de cette instance)
 		# On initialise des trophées différents pour tester si on veut
 		pseudo = "JOUEUR_" + str(OS.get_process_id()).right(3)
-		trophies = 500 # Score de départ pour test
+		trophies = 0 # Score de départ pour test
 		
 		config.set_value("player", "pseudo", pseudo)
 		config.set_value("player", "trophies", trophies)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://o0ooo8ugbrnn" path="res://scenes/minigames/BlockGame_Multiplayer/lobby.gd" id="1_tjsx0"]
 [ext_resource type="FontFile" uid="uid://bd7p25cgyjcdt" path="res://assets/fonts/LuckiestGuy-Regular.ttf" id="2_font"]
+[ext_resource type="FontFile" uid="uid://cro3cpoc7qi4f" path="res://assets/fonts/Nunito/static/Nunito-Black.ttf" id="3_yal7c"]
 
 [sub_resource type="Gradient" id="Gradient_glow"]
 colors = PackedColorArray(0.18, 0.1, 0.45, 1, 0.04, 0.04, 0.1, 1)
@@ -53,32 +54,30 @@ expand_margin_right = 15.0
 shadow_color = Color(1, 0.84, 0, 0.15)
 shadow_size = 12
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_LeaderboardPremium"]
-bg_color = Color(0.49, 0.3, 1, 1)
-border_width_bottom = 6
-border_color = Color(0.35, 0.2, 0.8, 1)
-corner_radius_top_left = 50
-corner_radius_top_right = 50
-corner_radius_bottom_right = 50
-corner_radius_bottom_left = 50
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 5
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Battle_Normal"]
 bg_color = Color(0.18, 0.8, 0.44, 1)
-border_width_bottom = 12
-border_color = Color(0.12, 0.6, 0.3, 1)
+border_width_bottom = 20
+border_color = Color(0.057999995, 0.29, 0.14693329, 1)
 corner_radius_top_left = 24
 corner_radius_top_right = 24
 corner_radius_bottom_right = 24
 corner_radius_bottom_left = 24
-shadow_color = Color(0.18, 0.8, 0.44, 0.3)
-shadow_size = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Battle_Pressed"]
 bg_color = Color(0.12, 0.6, 0.3, 1)
 border_width_top = 10
 border_color = Color(0, 0, 0, 0)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o72kk"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.22, 0.22, 0.22, 0.20784314)
+border_color = Color(0.8, 0.8, 0.8, 0)
 corner_radius_top_left = 24
 corner_radius_top_right = 24
 corner_radius_bottom_right = 24
@@ -92,6 +91,74 @@ corner_radius_top_left = 16
 corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ojbei"]
+bg_color = Color(0.8, 0.4776, 0.17600003, 1)
+border_width_bottom = 20
+border_color = Color(0.3, 0.08800001, 0.06, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gpt2"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0.11764706)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yal7c"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.3)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7uej"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aqfj5"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gya4y"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.22, 0.22, 0.22, 0)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [node name="Lobby" type="Control" unique_id=741110298]
 layout_mode = 3
@@ -142,7 +209,7 @@ hue_variation_max = 0.1
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 154.0
+offset_bottom = 200.0
 grow_horizontal = 2
 theme_override_constants/margin_left = 30
 theme_override_constants/margin_top = 30
@@ -153,8 +220,9 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="PlayerProfile" type="PanelContainer" parent="TopBar/HBox" unique_id=1148218488]
-custom_minimum_size = Vector2(300, 80)
+custom_minimum_size = Vector2(500, 80)
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_ProfileModern")
 
 [node name="HBox" type="HBoxContainer" parent="TopBar/HBox/PlayerProfile" unique_id=284910823]
@@ -168,7 +236,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="AvatarBox" type="Panel" parent="TopBar/HBox/PlayerProfile/HBox/MarginAvatar" unique_id=1693415666]
-custom_minimum_size = Vector2(60, 0)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_Avatar")
 
@@ -199,7 +267,7 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 40
 text = "JOUEUR"
 vertical_alignment = 1
 
@@ -208,21 +276,11 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.588235, 0.588235, 0.8, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 24
 text = "ID: #ABC123"
 vertical_alignment = 1
 
-[node name="Spacer" type="Control" parent="TopBar/HBox" unique_id=1787451913]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TrophyBox" type="PanelContainer" parent="TopBar/HBox" unique_id=1132538220]
-custom_minimum_size = Vector2(200, 70)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_styles/panel = SubResource("StyleBoxFlat_TrophyPremium")
-
-[node name="TrophyLabel" type="Label" parent="TopBar/HBox/TrophyBox" unique_id=25739687]
+[node name="TrophyLabel" type="Label" parent="TopBar/HBox" unique_id=25739687]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.9, 0.2, 1)
@@ -234,6 +292,17 @@ text = "🏆 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Spacer" type="Control" parent="TopBar/HBox" unique_id=1787451913]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TrophyBox" type="PanelContainer" parent="TopBar/HBox" unique_id=1132538220]
+visible = false
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_TrophyPremium")
+
 [node name="Spacer2" type="Control" parent="TopBar/HBox" unique_id=1089961200]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -243,15 +312,6 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
-
-[node name="LeaderboardBtn" type="Button" parent="TopBar/HBox" unique_id=882041677]
-custom_minimum_size = Vector2(80, 80)
-layout_mode = 2
-size_flags_vertical = 4
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 40
-theme_override_styles/normal = SubResource("StyleBoxFlat_LeaderboardPremium")
-text = "≡"
 
 [node name="MainContent" type="CenterContainer" parent="." unique_id=1138810977]
 layout_mode = 1
@@ -304,10 +364,11 @@ custom_minimum_size = Vector2(400, 120)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0.35, 0.15, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("2_font")
+theme_override_fonts/font = ExtResource("3_yal7c")
 theme_override_font_sizes/font_size = 60
 theme_override_styles/normal = SubResource("StyleBoxFlat_Battle_Normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_Battle_Pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_o72kk")
 text = "BATTLE !"
 
 [node name="CancelBtn" type="Button" parent="MainContent/VBox/Buttons" unique_id=1161078181]
@@ -331,15 +392,79 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="SoloBtn" type="Button" parent="MainContent/VBox/Buttons" unique_id=1181635803]
-custom_minimum_size = Vector2(400, 120)
+custom_minimum_size = Vector2(250, 120)
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_colors/font_outline_color = Color(0.9254902, 0.34901962, 0.14901961, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("2_font")
+theme_override_fonts/font = ExtResource("3_yal7c")
 theme_override_font_sizes/font_size = 60
-theme_override_styles/normal = SubResource("StyleBoxFlat_Battle_Normal")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ojbei")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_Battle_Pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0gpt2")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_yal7c")
 text = "Solo "
 
-[connection signal="pressed" from="TopBar/HBox/LeaderboardBtn" to="." method="_on_leaderboard_btn_pressed"]
+[node name="vboxshop" type="VBoxContainer" parent="." unique_id=654287305]
+custom_minimum_size = Vector2(300, 500)
+layout_mode = 0
+offset_left = 30.0
+offset_top = 257.0
+offset_right = 349.0
+offset_bottom = 757.0
+theme_override_constants/separation = 25
+
+[node name="ShopBtn" type="Button" parent="vboxshop" unique_id=1600817511]
+custom_minimum_size = Vector2(280, 90)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.25, 0.1, 0.05, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("3_yal7c")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_ojbei")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_Battle_Pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0gpt2")
+text = "SHOP"
+
+[node name="DailyRewardBtn" type="Button" parent="vboxshop" unique_id=888421882]
+custom_minimum_size = Vector2(280, 90)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.5, 0.4, 0, 1)
+theme_override_constants/outline_size = 6
+theme_override_fonts/font = ExtResource("3_yal7c")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_o72kk")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_Battle_Pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_0gpt2")
+text = "DAILY REWARD"
+
+[node name="LeaderboardBtn" type="Button" parent="." unique_id=882041677]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 0
+offset_left = 550.0
+offset_top = 57.0
+offset_right = 658.0
+offset_bottom = 160.0
+size_flags_vertical = 4
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_p7uej")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_aqfj5")
+theme_override_styles/hover = SubResource("StyleBoxFlat_gya4y")
+text = "
+"
+
+[node name="Label" type="Label" parent="." unique_id=60597161]
+layout_mode = 0
+offset_left = 932.0
+offset_top = 30.0
+offset_right = 1197.0
+offset_bottom = 151.0
+theme_override_fonts/font = ExtResource("3_yal7c")
+theme_override_font_sizes/font_size = 40
+text = "Beta"
+
 [connection signal="pressed" from="MainContent/VBox/Buttons/SoloBtn" to="." method="_on_solo_btn_pressed"]
+[connection signal="pressed" from="vboxshop/ShopBtn" to="." method="_on_shop_btn_pressed"]
+[connection signal="pressed" from="vboxshop/DailyRewardBtn" to="." method="_on_daily_reward_btn_pressed"]
+[connection signal="pressed" from="LeaderboardBtn" to="." method="_on_leaderboard_btn_pressed"]

@@ -295,11 +295,17 @@ func check_lines() -> int:
 		for line in lines_to_clear:
 			if line.type == "row":
 				# Ligne horizontale = 8 cases (exemple : 2 points de shield par case x combo)
-				player_shield += 8 * 2 * total_multi
+				var shield_gain = 8 * 2 * total_multi
+				player_shield += shield_gain
 				if player_shield > 1000: player_shield = 1000 # Cap maximum de bouclier
+				# ── Animation shield ──────────────────────────────────────────
+				animate_shield_gain(line.index, shield_gain)
 			elif line.type == "col":
 				# Ligne verticale = 12 cases (exemple : 5 points de dégâts par case x combo)
-				damage_dealt += 12 * 5 * total_multi
+				var dmg = 12 * 5 * total_multi
+				damage_dealt += dmg
+				# ── Animation attaque ─────────────────────────────────────────
+				animate_attack_launch(line.index, dmg)
 		
 		# On met à jour l'UI locale et on informe Firebase de nos propres stats
 		emit_signal("stats_updated")
@@ -319,6 +325,12 @@ func check_lines() -> int:
 	return damage_dealt # On retourne les dégâts pour que la pièce puisse les envoyer
 
 func clear_line(type, index):
+	# ── Délai de stagger entre chaque bloc (effet de vague directionnelle) ────
+	# ROW : gauche → droite  |  COL : haut → bas
+	var STAGGER    : float = 0.055
+	var FLASH_DUR  : float = 0.06
+	var SHRINK_DUR : float = 0.13
+
 	var count = grid_cols if type == "row" else grid_rows
 
 	for i in range(count):
@@ -326,23 +338,183 @@ func clear_line(type, index):
 		var y = index if type == "row" else i
 
 		var cell = get_node("Cell_" + str(x) + "_" + str(y))
-
 		grid_data[y][x] = 0
 		spawn_particles(cell.global_position)
 
+		var delay : float = i * STAGGER
+
 		for child in cell.get_children():
 			if child.name != "Cell" and not child is Line2D:
+				# 1. Flash blanc instantané
 				var t = create_tween().set_parallel(true)
-				t.tween_property(child, "scale", Vector2.ZERO, 0.15)
-				t.tween_property(child, "modulate:a", 0.0, 0.15)
+				t.tween_interval(delay)
+				t.chain()
+				t.set_parallel(true)
+				t.tween_property(child, "modulate", Color(2.5, 2.5, 2.5, 1.0), FLASH_DUR)
+				t.chain()
+				t.set_parallel(true)
+				t.tween_property(child, "scale",      Vector2.ZERO,             SHRINK_DUR)
+				t.tween_property(child, "modulate:a", 0.0,                      SHRINK_DUR)
 				t.chain().tween_callback(child.queue_free)
 
-		# !! CORRECTION : Remettre le fond de la cellule visible après avoir
-		# effacé les blocs posés. Sans ça, la grille reste trouée visuellement.
+		# Restauration du fond de cellule après la fin de l'animation
 		var bg = cell.get_node_or_null("Cell")
 		if bg:
-			bg.visible  = true
-			bg.modulate = Color.WHITE
+			var restore_tween = create_tween()
+			restore_tween.tween_interval(delay + FLASH_DUR + SHRINK_DUR)
+			restore_tween.tween_callback(func():
+				bg.visible  = true
+				bg.modulate = Color.WHITE
+			)
+
+# ══════════════════════════════════════════════════════════════════════════════
+#  ANIMATIONS DE FEEDBACK : SHIELD & ATTAQUE
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ─── Délai de base avant d'afficher le feedback (le temps que les blocs flash) ─
+const FEEDBACK_DELAY := 0.35
+
+func animate_shield_gain(row_index: int, shield_amount: int) -> void:
+	# Centre horizontal de la grille, hauteur de la ligne effacée
+	var row_center_x : float = grid_global_origin.x + float(grid_cols * cell_dim) / 2.0
+	var row_center_y : float = grid_global_origin.y + float(row_index * cell_dim) + float(cell_dim) / 2.0
+	var origin       : Vector2 = Vector2(row_center_x, row_center_y)
+
+	await get_tree().create_timer(FEEDBACK_DELAY).timeout
+
+	# ── Sweep lumineux horizontal (ligne qui traverse la rangée) ───────────────
+	var sweep := ColorRect.new()
+	sweep.color            = Color(0.0, 0.78, 1.0, 0.55)
+	sweep.size             = Vector2(0, cell_dim * 0.85)
+	sweep.global_position  = Vector2(grid_global_origin.x, row_center_y - cell_dim * 0.425)
+	sweep.z_index          = 60
+	add_child(sweep)
+
+	var sweep_t := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	sweep_t.tween_property(sweep, "size:x",     grid_cols * cell_dim, 0.18)
+	sweep_t.tween_property(sweep, "modulate:a", 0.0,                  0.22)
+	sweep_t.tween_callback(sweep.queue_free)
+
+	# ── Icône 🛡 + valeur : pop élastique au centre ────────────────────────────
+	var lbl := Label.new()
+	lbl.text                    = "🛡  +%d" % shield_amount
+	lbl.add_theme_font_size_override("font_size", 54)
+	lbl.add_theme_color_override("font_color",        Color("00D4FF"))
+	lbl.add_theme_color_override("font_shadow_color", Color(0, 0.08, 0.25, 0.85))
+	lbl.add_theme_constant_override("shadow_offset_x", 3)
+	lbl.add_theme_constant_override("shadow_offset_y", 3)
+	lbl.horizontal_alignment    = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment      = VERTICAL_ALIGNMENT_CENTER
+	lbl.size                    = Vector2(340, 80)
+	lbl.pivot_offset            = lbl.size / 2.0
+	lbl.global_position         = origin - lbl.size / 2.0
+	lbl.scale                   = Vector2(0.0, 0.0)
+	lbl.z_index                 = 80
+	add_child(lbl)
+
+	# Elastic scale-in  →  pause  →  float up + fade
+	var lbl_t := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	lbl_t.tween_property(lbl, "scale", Vector2(1.1, 1.1), 0.42)
+	lbl_t.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	lbl_t.tween_property(lbl, "scale", Vector2(1.0, 1.0), 0.12)
+	lbl_t.tween_interval(0.55)
+	lbl_t.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	lbl_t.set_parallel(true)
+	lbl_t.tween_property(lbl, "global_position:y", lbl.global_position.y - 90.0, 0.45)
+	lbl_t.tween_property(lbl, "modulate:a",        0.0,                           0.45)
+	lbl_t.tween_callback(lbl.queue_free)
+
+
+func animate_attack_launch(col_index: int, damage: int) -> void:
+	var col_x     : float = grid_global_origin.x + float(col_index * cell_dim) + float(cell_dim) / 2.0
+	var col_top_y : float = grid_global_origin.y
+	var col_bot_y : float = grid_global_origin.y + float(grid_rows * cell_dim)
+
+	await get_tree().create_timer(FEEDBACK_DELAY).timeout
+
+	# ── Beam d'énergie : part du haut de la colonne et descend vers le bas ─────
+	# Représente visuellement la trajectoire de l'attaque vers l'adversaire.
+	var BEAM_W   : float = float(cell_dim) * 0.55
+	var BEAM_CLR : Color = Color("FF5A1A")
+
+	var beam := ColorRect.new()
+	beam.color           = Color(BEAM_CLR.r, BEAM_CLR.g, BEAM_CLR.b, 0.80)
+	beam.size            = Vector2(BEAM_W, 0)
+	beam.global_position = Vector2(col_x - BEAM_W / 2.0, col_top_y)
+	beam.z_index         = 70
+	add_child(beam)
+
+	# Lueur extérieure (halo plus large et transparent)
+	var glow := ColorRect.new()
+	glow.color           = Color(BEAM_CLR.r, BEAM_CLR.g, BEAM_CLR.b, 0.25)
+	glow.size            = Vector2(BEAM_W * 2.6, 0)
+	glow.global_position = Vector2(col_x - BEAM_W * 1.3, col_top_y)
+	glow.z_index         = 69
+	add_child(glow)
+
+	# Phase 1 : le beam s'étend vers le bas (durée proportionnelle à la longueur)
+	var GROW_DUR : float = 0.22
+	var total_h  : float = col_bot_y - col_top_y + 200.0   # dépasse l'écran
+	var beam_t     := create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	beam_t.set_parallel(true)
+	beam_t.tween_property(beam, "size:y", total_h, GROW_DUR)
+	beam_t.tween_property(glow, "size:y", total_h, GROW_DUR)
+	# Phase 2 : fade rapide
+	beam_t.chain().set_parallel(true)
+	beam_t.tween_property(beam, "modulate:a", 0.0, 0.18)
+	beam_t.tween_property(glow, "modulate:a", 0.0, 0.18)
+	beam_t.tween_callback(beam.queue_free)
+	beam_t.tween_callback(glow.queue_free)
+
+	# ── Petites particules rapides qui filent vers le bas ─────────────────────
+	for k in range(5):
+		var spark := ColorRect.new()
+		var spark_w : float = randf_range(4.0, 9.0)
+		var spark_h : float = randf_range(14.0, 28.0)
+		spark.color           = Color(1.0, randf_range(0.4, 0.9), 0.1, 1.0)
+		spark.size            = Vector2(spark_w, spark_h)
+		spark.global_position = Vector2(
+			col_x + randf_range(-BEAM_W * 0.6, BEAM_W * 0.6) - spark_w / 2.0,
+			col_top_y + k * (grid_rows * cell_dim / 5.0)
+		)
+		spark.z_index = 71
+		add_child(spark)
+		var s_t := create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+		s_t.set_parallel(true)
+		var travel : float = col_bot_y - spark.global_position.y + 180.0
+		s_t.tween_property(spark, "global_position:y", spark.global_position.y + travel, GROW_DUR + 0.05)
+		s_t.tween_property(spark, "modulate:a", 0.0, GROW_DUR + 0.05)
+		s_t.tween_callback(spark.queue_free)
+
+	# ── Texte de dégâts : pop en haut de la colonne ───────────────────────────
+	var dmg_lbl := Label.new()
+	dmg_lbl.text = "⚔  -%d" % damage
+	dmg_lbl.add_theme_font_size_override("font_size", 52)
+	dmg_lbl.add_theme_color_override("font_color",        Color("FF5A1A"))
+	dmg_lbl.add_theme_color_override("font_shadow_color", Color(0.25, 0.04, 0, 0.9))
+	dmg_lbl.add_theme_constant_override("shadow_offset_x", 3)
+	dmg_lbl.add_theme_constant_override("shadow_offset_y", 3)
+	dmg_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	dmg_lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
+	dmg_lbl.size                 = Vector2(240, 72)
+	dmg_lbl.pivot_offset         = dmg_lbl.size / 2.0
+	# Positionné à gauche ou droite du beam selon la position dans la grille
+	var lbl_offset_x : float = 130.0 if col_index < grid_cols / 2 else -130.0
+	dmg_lbl.global_position      = Vector2(col_x + lbl_offset_x - 120.0, col_top_y - 10.0)
+	dmg_lbl.scale                = Vector2(0.0, 0.0)
+	dmg_lbl.z_index              = 80
+	add_child(dmg_lbl)
+
+	var dlbl_t := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	dlbl_t.tween_property(dmg_lbl, "scale", Vector2(1.15, 1.15), 0.20)
+	dlbl_t.set_trans(Tween.TRANS_SINE)
+	dlbl_t.tween_property(dmg_lbl, "scale", Vector2(1.0, 1.0),   0.10)
+	dlbl_t.tween_interval(0.50)
+	dlbl_t.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_CUBIC)
+	dlbl_t.set_parallel(true)
+	dlbl_t.tween_property(dmg_lbl, "global_position:y", dmg_lbl.global_position.y + 70.0, 0.40)
+	dlbl_t.tween_property(dmg_lbl, "modulate:a",        0.0,                               0.40)
+	dlbl_t.tween_callback(dmg_lbl.queue_free)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  UTILITAIRES

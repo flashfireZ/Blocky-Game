@@ -204,9 +204,9 @@ theme_override_font_sizes/font_size = 30
 [node name="GridBackdrop" type="ColorRect" parent="." unique_id=200000003]
 z_index = -1
 offset_left = 54.0
-offset_top = 144.0
+offset_top = 137.0
 offset_right = 1026.0
-offset_bottom = 1593.0
+offset_bottom = 1510.0
 mouse_filter = 2
 color = Color(1, 1, 1, 0.03)
 
@@ -370,26 +370,20 @@ theme_override_styles/focus = SubResource("SB_QuitNormal")
 text = "QUIT"
 
 [node name="Spacer1" type="Control" parent="HUD/TopBar/HBox" unique_id=301642548]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 
 [node name="OpponentStats" type="VBoxContainer" parent="HUD/TopBar/HBox" unique_id=265292620]
 custom_minimum_size = Vector2(460, 0)
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/separation = 8
 
-[node name="OpponentLabel" type="Label" parent="HUD/TopBar/HBox/OpponentStats" unique_id=513139021]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.8)
-theme_override_constants/outline_size = 0
-theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 20
-text = "ADVERSAIRE"
-horizontal_alignment = 1
-
 [node name="HPBarOpponent" type="ProgressBar" parent="HUD/TopBar/HBox/OpponentStats" unique_id=1225804908]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+size_flags_vertical = 2
 theme_override_styles/background = SubResource("SB_BarBg")
 theme_override_styles/fill = SubResource("SB_HPOpp")
 max_value = 1500.0
@@ -410,14 +404,15 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 35
 text = "1500"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="ShieldBarOpponent" type="ProgressBar" parent="HUD/TopBar/HBox/OpponentStats" unique_id=1150578011]
-custom_minimum_size = Vector2(0, 16)
+custom_minimum_size = Vector2(0, 35)
 layout_mode = 2
+size_flags_vertical = 2
 theme_override_styles/background = SubResource("SB_BarBg")
 theme_override_styles/fill = SubResource("SB_Shield")
 max_value = 1000.0
@@ -432,30 +427,45 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 35
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Spacer2" type="Control" parent="HUD/TopBar/HBox" unique_id=1944209202]
 layout_mode = 2
-size_flags_horizontal = 3
+
+[node name="OpponentLabel" type="Label" parent="HUD/TopBar/HBox" unique_id=513139021]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.8)
+theme_override_constants/outline_size = 0
+theme_override_fonts/font = ExtResource("4_nky6x")
+theme_override_font_sizes/font_size = 20
+text = "ADVERSAIRE"
+horizontal_alignment = 1
 
 [node name="SpacerRight" type="Control" parent="HUD/TopBar/HBox" unique_id=1753457828]
-custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="BottomBar" type="MarginContainer" parent="HUD" unique_id=2043662871]
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 1797.0
-offset_bottom = 1920.0
+custom_minimum_size = Vector2(600, 0)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -56.0
+offset_top = -123.0
+offset_right = 56.0
 grow_horizontal = 2
+grow_vertical = 0
 mouse_filter = 2
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 16
@@ -497,13 +507,13 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 35
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HPBarPlayer" type="ProgressBar" parent="HUD/BottomBar/PlayerStats" unique_id=1578213377]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_styles/background = SubResource("SB_BarBg")
 theme_override_styles/fill = SubResource("SB_HPPlayer")
@@ -516,6 +526,7 @@ visible = false
 layout_mode = 1
 
 [node name="HealthLabelPlayer" type="Label" parent="HUD/BottomBar/PlayerStats/HPBarPlayer" unique_id=2119062358]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -525,14 +536,13 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_constants/outline_size = 0
 theme_override_fonts/font = ExtResource("4_nky6x")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 35
 text = "1500"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="GameOverUI" type="CanvasLayer" parent="." unique_id=1164116759]
 layer = 10
-visible = false
 script = ExtResource("9_3sh80")
 
 [node name="Overlay" type="ColorRect" parent="GameOverUI" unique_id=1199785084]
@@ -590,6 +600,9 @@ theme_override_font_sizes/font_size = 80
 text = "VICTOIRE 🏆"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TrophyChangeLabel" type="Label" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=1759402582]
+layout_mode = 2
 
 [node name="SpacerA" type="Control" parent="GameOverUI/CenterContainer/MainPanel/MarginContainer/VBoxContainer" unique_id=885289131]
 custom_minimum_size = Vector2(0, 22)

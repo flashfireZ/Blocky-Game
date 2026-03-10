@@ -8,6 +8,7 @@ extends Node
 var game_id      : String = ""
 var player_key   : String = "player1"
 var opp_key      : String = "player2"
+var last_trophy_change : int = 0   # ← accessible depuis le game over screen
 
 # ─── IDs lisibles des joueurs (remplis par le lobby) ─────────────────────────
 var my_pid  : String = ""
@@ -25,15 +26,16 @@ var _last_opp_activity_ts : float = 0.0   # Quand on a reçu un nouveau coup adv
 var _local_last_action_ts : float = 0.0   # Quand le joueur local a posé sa dernière pièce
 var _game_start_ts        : float = 0.0   # Timestamp Unix du début de partie
 
-var _is_connected   : bool = false
-var _game_over_sent : bool = false         # ← Verrou anti double-envoi de fin de partie
+var _is_connected      : bool = false
+var _game_over_sent    : bool = false   # ← Verrou anti double-envoi de fin de partie
+var _trophies_updated  : bool = false   # ← Verrou anti double-mise à jour des trophées
 var veut_rejouer_directement : bool = false
 var _grid  : Node = null
 var _timer : Node = null
 
 signal opponent_move_received(move: Dictionary)
 signal connection_error(message: String)
-signal game_finished(winner_id: String)
+signal game_finished(winner_id: String, trophy_change: int)
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  INITIALISATION
@@ -44,6 +46,7 @@ func init(p_game_id: String, is_player1: bool):
 	opp_key         = "player2" if is_player1 else "player1"
 	_is_connected   = true
 	_game_over_sent = false
+	_trophies_updated = false
 	_last_move_ts   = 0.0
 
 	var now               = Time.get_unix_time_from_system()
@@ -102,14 +105,15 @@ func _on_game_data_received(data):
 		_is_connected = false
 		if not _game_over_sent:
 			_game_over_sent = true
-			game_finished.emit(winner)
+			var change = _update_local_trophies(winner)   # ← calcul ici aussi
+			game_finished.emit(winner, change)            # ← passer le delta
 		return
 
 	# 2. Traiter les données de l'adversaire
 	var opp_data = data.get(opp_key, {})
 	if typeof(opp_data) == TYPE_DICTIONARY and not opp_data.is_empty():
 		_process_opponent_state(opp_data)
-
+		
 func _process_opponent_state(data: Dictionary):
 	var ts = float(data.get("last_move_ts", 0.0))
 	if ts > _last_move_ts:
@@ -155,16 +159,11 @@ func declare_winner_and_finish(winner_pid: String):
 	if _game_over_sent: return
 	_game_over_sent = true
 	_is_connected   = false
-	
-	# 1. Mise à jour des trophées localement (AVANT de quitter)
-	_update_local_trophies(winner_pid)
-	
-	# 2. Notification Firebase et Signal local
+
+	var change = _update_local_trophies(winner_pid)   # ← récupérer le delta
 	notify_game_over(winner_pid)
-	game_finished.emit(winner_pid)
-	
+	game_finished.emit(winner_pid, change)            # ← passer le delta
 	print("[Firebase] Fin de partie — vainqueur : ", winner_pid)
-## Appelé quand le joueur local appuie sur Quitter ou ferme l'app.
 func notify_player_quit():
 	print("[Firebase] Joueur local a quitté — défaite par abandon")
 	declare_winner_and_finish(opp_pid)
@@ -194,28 +193,44 @@ func notify_game_over(winner_id: String):
 	var data = {"status": "finished", "winner": winner_id}
 	fb_patch("/games/%s.json" % game_id, JSON.stringify(data))
 
-func _update_local_trophies(winner_pid: String):
-	var is_winner = (winner_pid == my_pid) # 'my_pid' est ton ID local
-	var change = 20 if is_winner else -10   # Gain ou perte
-	
+func _update_local_trophies(winner_pid: String) -> int:
+	if _trophies_updated:
+		print("[Trophies] Déjà mis à jour pour cette partie, ignoré.")
+		return last_trophy_change
+
+	_trophies_updated = true
+
+	var is_winner : bool = (winner_pid == my_pid)
+
+	var change : int
+	if is_winner:
+		change = randi_range(19, 31)
+	else:
+		change = -randi_range(11, 21)
+	last_trophy_change = change
+
 	var config = ConfigFile.new()
-	var path = "user://player.cfg"
-	
-	# --- LOGIQUE DE DEBUG (IMPORTANT pour tes 2 instances) ---
+	var path   = "user://player.cfg"
 	if OS.has_feature("debug"):
 		path = "user://player_debug_%d.cfg" % OS.get_process_id()
-	
-	# Chargement et modification
+
 	var err = config.load(path)
-	if err == OK:
-		var current_trophies = config.get_value("player", "trophies", 0)
-		var new_total = max(0, current_trophies + change) # Empêche d'avoir des trophées négatifs
-		
-		config.set_value("player", "trophies", new_total)
-		config.save(path)
-		print("[Trophies] Sauvegarde locale : %d (%+d)" % [new_total, change])
-	else:
-		print("[ERREUR] Impossible de charger le fichier de sauvegarde : ", path)
+	if err != OK:
+		print("[ERREUR Trophies] Impossible de charger : ", path)
+		return change   # ← était "return" sans valeur
+
+	var pseudo           : String = config.get_value("player", "pseudo", "???")
+	var current_trophies : int    = config.get_value("player", "trophies", 0)
+	var new_total        : int    = max(0, current_trophies + change)
+
+	config.set_value("player", "trophies", new_total)
+	config.save(path)
+
+	var sign_str = "+" if change >= 0 else ""
+	print("[Trophies] %s%d → total %d (était %d)" % [sign_str, change, new_total, current_trophies])
+
+	leaderboard_update(pseudo, change)
+	return change
 
 
 # ══════════════════════════════════════════════════════════════════════════════

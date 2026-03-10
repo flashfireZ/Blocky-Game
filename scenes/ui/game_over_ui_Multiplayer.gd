@@ -22,6 +22,17 @@ func setup_game_over(score: int, is_winner: bool = true):
 	if final_score_label:
 		final_score_label.text = "Score Final : " + str(score)
 
+	# ── Trophées ──────────────────────────────────────────────────────────────
+	var trophy_label = find_child("TrophyChangeLabel", true, false)
+	if trophy_label:
+		var delta = FirebaseManager.last_trophy_change
+		var sign  = "+" if delta >= 0 else ""
+		trophy_label.text = "🏆 %s%d trophées" % [sign, delta]
+		if delta >= 0:
+			trophy_label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.4, 1.0))
+		else:
+			trophy_label.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4, 1.0))
+
 	if status_label:
 		if is_winner:
 			status_label.text = "VICTOIRE 🏆"

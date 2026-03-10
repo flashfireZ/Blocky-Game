@@ -1,9 +1,9 @@
-Button
 Label
+VBoxContainer
+Button
 HBoxContainer
 PanelContainer
 ColorRect
-VBoxContainer
 ScrollContainer
 Control
 LineEdit
