@@ -1,7 +1,18 @@
 # Godot-specific
-.import/
+*.import/
 export.cfg
 export_presets.cfg
+
+# Android build
+android/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/gradlew
+android/gradlew.bat
+android/gradle/
+android/build.gradle
+android/settings.gradle
 
 # Mono 
 .mono/
